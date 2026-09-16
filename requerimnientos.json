@@ -1,0 +1,3662 @@
+{
+  "project": {
+    "name": "Arepa Business Manager",
+    "type": "mobile_application",
+    "version": "1.0.0",
+    "language": "es",
+    "target_market": "Venezuela",
+    "platforms": [
+      "Android",
+      "iOS"
+    ],
+    "description": "Aplicación móvil para gestionar la producción, inventario, costos, gastos, ventas y rentabilidad de un negocio de arepas de yuca.",
+    "problem_statement": "El negocio necesita registrar sus gastos y ventas en bolívares y dólares, convertir los montos utilizando una tasa de cambio configurable o consultada automáticamente, conocer cuánto dinero debería tener disponible y calcular las ganancias reales considerando la materia prima, los insumos y los costos externos.",
+    "proposed_solution": "Una aplicación financiera y operativa que centralice las tasas de cambio, recetas, costos de producción, inventario, ventas y gastos, y que genere indicadores financieros y de producción en un dashboard.",
+    "source": {
+      "type": "user_audio_transcription",
+      "confidence": "high",
+      "notes": "Los requisitos principales provienen de la transcripción proporcionada. Las funcionalidades marcadas como propuestas deben validarse antes del desarrollo."
+    }
+  },
+  "source_analysis": {
+    "explicit_requirements": [
+      {
+        "id": "REQ-001",
+        "requirement": "Dashboard inicial",
+        "source_timestamp": "00:00-00:07",
+        "details": "La aplicación debe iniciar con un dashboard que permita visualizar información relevante del negocio."
+      },
+      {
+        "id": "REQ-002",
+        "requirement": "Visualizar cantidades de arepas",
+        "source_timestamp": "00:07-00:17",
+        "details": "Mostrar las cantidades de arepas disponibles o registradas y, posiblemente, el total por sabor."
+      },
+      {
+        "id": "REQ-003",
+        "requirement": "Consultar cantidades vendidas por período",
+        "source_timestamp": "00:07-00:17",
+        "details": "Permitir consultar la cantidad vendida, incluyendo una vista mensual."
+      },
+      {
+        "id": "REQ-004",
+        "requirement": "Registrar gastos",
+        "source_timestamp": "00:17-00:28",
+        "details": "El usuario debe poder registrar todos los gastos del negocio."
+      },
+      {
+        "id": "REQ-005",
+        "requirement": "Registrar ventas",
+        "source_timestamp": "00:17-00:28",
+        "details": "El usuario debe poder registrar las ventas realizadas."
+      },
+      {
+        "id": "REQ-006",
+        "requirement": "Conversión de bolívares a dólares",
+        "source_timestamp": "00:28-00:41",
+        "details": "Los montos registrados en bolívares deben poder convertirse a dólares utilizando una tasa de cambio."
+      },
+      {
+        "id": "REQ-007",
+        "requirement": "Configurar la tasa diariamente",
+        "source_timestamp": "00:34-00:41",
+        "details": "El usuario debe poder configurar o actualizar la tasa de cambio todos los días."
+      },
+      {
+        "id": "REQ-008",
+        "requirement": "Calcular dinero disponible",
+        "source_timestamp": "00:49-01:07",
+        "details": "La aplicación debe calcular cuánto dinero debería estar disponible según gastos y ventas."
+      },
+      {
+        "id": "REQ-009",
+        "requirement": "Calcular ganancias",
+        "source_timestamp": "00:49-01:07",
+        "details": "La aplicación debe calcular las ganancias considerando los ingresos y el costo de los productos."
+      },
+      {
+        "id": "REQ-010",
+        "requirement": "Gestionar materia prima",
+        "source_timestamp": "01:07-01:23",
+        "details": "Registrar ingredientes e insumos utilizados para elaborar las arepas."
+      },
+      {
+        "id": "REQ-011",
+        "requirement": "Calcular costos mediante insumos",
+        "source_timestamp": "01:16-01:32",
+        "details": "El costo de cada arepa debe calcularse a partir de los ingredientes y otros materiales utilizados."
+      },
+      {
+        "id": "REQ-012",
+        "requirement": "Gestionar costos externos",
+        "source_timestamp": "01:16-01:32",
+        "details": "Registrar costos externos como bolsas y otros elementos de empaque."
+      },
+      {
+        "id": "REQ-013",
+        "requirement": "Consultar tasa BCV",
+        "source_timestamp": "01:32-fin",
+        "details": "Evaluar el uso de una API o fuente que proporcione el precio del dólar BCV."
+      },
+      {
+        "id": "REQ-014",
+        "requirement": "Consultar tasa USDT",
+        "source_timestamp": "01:32-fin",
+        "details": "Evaluar el uso de una API o librería que proporcione el precio del USDT en bolívares."
+      }
+    ],
+    "identified_problem": "Falta de una herramienta centralizada para conocer los costos reales de producción, registrar movimientos financieros en un contexto de múltiples tasas de cambio y determinar la rentabilidad y el saldo esperado del negocio.",
+    "target_users": [
+      {
+        "type": "primary",
+        "name": "Propietario o administrador del negocio",
+        "needs": [
+          "Conocer ingresos y gastos",
+          "Controlar costos de producción",
+          "Consultar inventario",
+          "Calcular ganancias",
+          "Saber cuánto dinero debería tener disponible"
+        ]
+      },
+      {
+        "type": "secondary",
+        "name": "Persona encargada de producción",
+        "needs": [
+          "Registrar producción",
+          "Controlar insumos",
+          "Consultar cantidades por sabor"
+        ]
+      }
+    ],
+    "pain_points": [
+      "Registro manual o disperso de gastos y ventas.",
+      "Dificultad para convertir correctamente los movimientos entre bolívares y dólares.",
+      "Pérdida de referencia sobre la tasa aplicada a cada operación.",
+      "Falta de visibilidad sobre el costo real de cada producto.",
+      "Dificultad para diferenciar ingresos, gastos, costos de producción y ganancias.",
+      "Falta de control centralizado sobre las cantidades producidas, vendidas y disponibles."
+    ],
+    "assumptions": [
+      {
+        "id": "ASM-001",
+        "assumption": "El negocio vende diferentes sabores de arepas.",
+        "validation_needed": true
+      },
+      {
+        "id": "ASM-002",
+        "assumption": "Las ventas pueden registrarse en bolívares, dólares o ambas monedas.",
+        "validation_needed": true
+      },
+      {
+        "id": "ASM-003",
+        "assumption": "El inventario debe controlarse por unidades y sabor.",
+        "validation_needed": true
+      },
+      {
+        "id": "ASM-004",
+        "assumption": "Una receta define los ingredientes y cantidades necesarias para producir una cantidad determinada de arepas.",
+        "validation_needed": true
+      },
+      {
+        "id": "ASM-005",
+        "assumption": "El costo de empaque puede calcularse por unidad o por lote.",
+        "validation_needed": true
+      },
+      {
+        "id": "ASM-006",
+        "assumption": "El saldo disponible mostrado inicialmente será un saldo teórico basado en movimientos registrados.",
+        "validation_needed": true
+      }
+    ]
+  },
+  "product_definition": {
+    "product_name_options": [
+      "ArepaControl",
+      "Arepa Finanzas",
+      "Arepa Manager",
+      "ArepaTrack"
+    ],
+    "value_proposition": "Controla en un solo lugar la producción, los costos, las ventas y las finanzas de tu negocio de arepas, con conversión de monedas y cálculo de rentabilidad.",
+    "main_objective": "Permitir al propietario conocer con precisión cuánto cuesta producir, cuánto vende, cuánto gasta y cuánto dinero y utilidad genera el negocio.",
+    "secondary_objectives": [
+      "Reducir el registro manual y los cálculos en hojas de cálculo.",
+      "Mantener un historial confiable de tasas de cambio.",
+      "Facilitar la toma de decisiones sobre precios y producción.",
+      "Identificar los sabores o productos más vendidos.",
+      "Detectar desviaciones entre el dinero esperado y el dinero real."
+    ],
+    "success_metrics": [
+      {
+        "metric": "Porcentaje de ventas registradas",
+        "target": "La mayoría de las ventas del negocio deben quedar registradas en la aplicación."
+      },
+      {
+        "metric": "Porcentaje de gastos registrados",
+        "target": "Los gastos operativos y de producción deben quedar registrados."
+      },
+      {
+        "metric": "Tiempo de registro",
+        "target": "Registrar una venta o gasto en menos de 30 segundos después de configurados los datos frecuentes."
+      },
+      {
+        "metric": "Exactitud del costo",
+        "target": "El costo calculado debe coincidir con las recetas e insumos configurados."
+      },
+      {
+        "metric": "Conciliación",
+        "target": "El usuario debe poder comparar el saldo teórico con el dinero real."
+      }
+    ]
+  },
+  "user_roles": [
+    {
+      "id": "ROLE-001",
+      "name": "owner",
+      "display_name": "Propietario",
+      "description": "Administra toda la información del negocio.",
+      "permissions": [
+        "view_dashboard",
+        "manage_products",
+        "manage_recipes",
+        "manage_ingredients",
+        "manage_packaging",
+        "manage_inventory",
+        "manage_sales",
+        "manage_expenses",
+        "manage_exchange_rates",
+        "view_reports",
+        "manage_settings",
+        "manage_users"
+      ]
+    },
+    {
+      "id": "ROLE-002",
+      "name": "operator",
+      "display_name": "Operador",
+      "description": "Registra operaciones autorizadas del negocio.",
+      "permissions": [
+        "view_dashboard",
+        "view_products",
+        "view_inventory",
+        "create_sales",
+        "create_expenses",
+        "create_production"
+      ]
+    }
+  ],
+  "core_modules": [
+    {
+      "id": "MOD-001",
+      "name": "Dashboard",
+      "description": "Resumen operativo y financiero del negocio.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-002",
+      "name": "Ventas",
+      "description": "Registro y consulta de ventas.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-003",
+      "name": "Gastos",
+      "description": "Registro y consulta de gastos.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-004",
+      "name": "Productos y sabores",
+      "description": "Configuración de productos, presentaciones y sabores.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-005",
+      "name": "Recetas y costos",
+      "description": "Configuración de ingredientes, cantidades y costos por producto.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-006",
+      "name": "Inventario y producción",
+      "description": "Registro de producción, consumo de insumos y existencias.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-007",
+      "name": "Tasas de cambio",
+      "description": "Registro y consulta de tasas BCV y USDT.",
+      "priority": "must_have"
+    },
+    {
+      "id": "MOD-008",
+      "name": "Reportes",
+      "description": "Análisis de ventas, gastos, costos, utilidad e inventario.",
+      "priority": "should_have"
+    },
+    {
+      "id": "MOD-009",
+      "name": "Configuración",
+      "description": "Configuración del negocio, monedas, categorías y preferencias.",
+      "priority": "must_have"
+    }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FR-001",
+      "name": "Visualizar dashboard",
+      "description": "El usuario podrá visualizar un resumen de los principales indicadores del negocio.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero ver un resumen del negocio al abrir la aplicación para conocer su estado rápidamente.",
+      "acceptance_criteria": [
+        "El dashboard muestra ventas del período seleccionado.",
+        "El dashboard muestra gastos del período seleccionado.",
+        "El dashboard muestra utilidad estimada o calculada.",
+        "El dashboard muestra saldo teórico.",
+        "El dashboard muestra cantidades de inventario o productos disponibles.",
+        "El usuario puede seleccionar un período."
+      ]
+    },
+    {
+      "id": "FR-002",
+      "name": "Consultar cantidades por sabor",
+      "description": "El usuario podrá visualizar las cantidades producidas, vendidas y disponibles por sabor.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero saber cuántas arepas tengo de cada sabor para controlar mi producción e inventario.",
+      "acceptance_criteria": [
+        "Cada sabor aparece como una fila o tarjeta.",
+        "Se muestra cantidad producida.",
+        "Se muestra cantidad vendida.",
+        "Se muestra cantidad disponible.",
+        "Se permite filtrar por período.",
+        "Las cantidades se actualizan después de registrar producción o ventas."
+      ]
+    },
+    {
+      "id": "FR-003",
+      "name": "Consultar ventas mensuales",
+      "description": "El usuario podrá consultar las unidades vendidas y los ingresos agrupados por mes.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero ver cuánto vendí cada mes para analizar el comportamiento del negocio.",
+      "acceptance_criteria": [
+        "Se puede seleccionar un mes o rango de fechas.",
+        "Se muestra el total de unidades vendidas.",
+        "Se muestra el total de ingresos.",
+        "Se puede desglosar por sabor.",
+        "Se puede desglosar por moneda."
+      ]
+    },
+    {
+      "id": "FR-004",
+      "name": "Registrar gasto",
+      "description": "El usuario podrá registrar un gasto indicando monto, moneda, categoría, fecha y descripción.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero registrar cada gasto para conocer cuánto dinero sale del negocio.",
+      "acceptance_criteria": [
+        "El gasto requiere monto.",
+        "El gasto requiere moneda.",
+        "El gasto requiere fecha.",
+        "El usuario puede seleccionar una categoría.",
+        "El sistema registra la tasa utilizada.",
+        "El sistema calcula el equivalente en USD.",
+        "El gasto aparece en el historial."
+      ]
+    },
+    {
+      "id": "FR-005",
+      "name": "Registrar venta",
+      "description": "El usuario podrá registrar una venta de uno o varios productos o sabores.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero registrar las ventas para conocer mis ingresos y actualizar las existencias.",
+      "acceptance_criteria": [
+        "La venta permite agregar uno o varios productos.",
+        "Cada producto tiene cantidad y precio.",
+        "El sistema calcula el subtotal y total.",
+        "El usuario puede seleccionar la moneda de cobro.",
+        "El sistema registra la tasa utilizada.",
+        "El sistema calcula el equivalente en USD.",
+        "El inventario se descuenta según la configuración.",
+        "La venta aparece en el historial."
+      ]
+    },
+    {
+      "id": "FR-006",
+      "name": "Gestionar tasas de cambio",
+      "description": "El usuario podrá consultar, configurar y guardar tasas de cambio.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero registrar la tasa del día para que los movimientos financieros tengan una conversión consistente.",
+      "acceptance_criteria": [
+        "Se puede registrar una tasa BCV.",
+        "Se puede registrar una tasa USDT.",
+        "Cada tasa tiene fecha y hora.",
+        "El usuario puede indicar la fuente.",
+        "El usuario puede establecer una tasa manual.",
+        "El sistema conserva las tasas históricas.",
+        "Cada operación conserva la tasa utilizada al registrarse."
+      ]
+    },
+    {
+      "id": "FR-007",
+      "name": "Convertir monedas",
+      "description": "El sistema convertirá montos entre VES y USD usando la tasa correspondiente.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero ver mis operaciones en dólares para comparar ingresos, gastos y rentabilidad.",
+      "acceptance_criteria": [
+        "El sistema admite VES y USD.",
+        "El sistema calcula VES a USD.",
+        "El sistema calcula USD a VES.",
+        "La tasa aplicada queda almacenada en la operación.",
+        "Las operaciones históricas no cambian al actualizar la tasa actual.",
+        "El usuario puede visualizar el monto original y el equivalente."
+      ]
+    },
+    {
+      "id": "FR-008",
+      "name": "Calcular saldo teórico",
+      "description": "El sistema calculará el dinero esperado a partir de saldos iniciales, ingresos y egresos registrados.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero saber cuánto dinero debería tener disponible según lo registrado.",
+      "acceptance_criteria": [
+        "El sistema permite configurar un saldo inicial.",
+        "El saldo considera los ingresos registrados.",
+        "El saldo considera los gastos registrados.",
+        "El saldo puede visualizarse por moneda.",
+        "El saldo puede visualizarse consolidado en USD.",
+        "El usuario puede seleccionar una fecha o período.",
+        "El cálculo no confunde saldo teórico con dinero físico real."
+      ]
+    },
+    {
+      "id": "FR-009",
+      "name": "Calcular utilidad",
+      "description": "El sistema calculará la utilidad a partir de ingresos y costos asociados a las unidades vendidas.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero conocer mi ganancia real y no solamente el dinero que ingresó.",
+      "acceptance_criteria": [
+        "El sistema calcula ingresos por ventas.",
+        "El sistema calcula el costo de ventas.",
+        "El sistema calcula utilidad bruta.",
+        "El sistema permite incluir gastos operativos.",
+        "El sistema calcula utilidad neta estimada.",
+        "El usuario puede consultar la utilidad por período.",
+        "El usuario puede consultar la utilidad por sabor."
+      ]
+    },
+    {
+      "id": "FR-010",
+      "name": "Gestionar ingredientes",
+      "description": "El usuario podrá crear y editar ingredientes o insumos utilizados en las recetas.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero registrar los ingredientes para calcular correctamente el costo de producción.",
+      "acceptance_criteria": [
+        "Se puede crear un ingrediente.",
+        "El ingrediente tiene nombre.",
+        "El ingrediente tiene unidad de medida.",
+        "Se puede registrar el costo de compra.",
+        "Se puede registrar la cantidad comprada.",
+        "El sistema calcula el costo por unidad de medida.",
+        "Se puede registrar proveedor opcional.",
+        "Se puede activar o desactivar un ingrediente."
+      ]
+    },
+    {
+      "id": "FR-011",
+      "name": "Gestionar costos externos",
+      "description": "El usuario podrá registrar materiales externos como bolsas, etiquetas y empaques.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero incluir el costo de las bolsas y empaques para conocer el costo completo del producto.",
+      "acceptance_criteria": [
+        "Se puede crear un costo externo.",
+        "Se puede indicar nombre y categoría.",
+        "Se puede registrar costo de compra.",
+        "Se puede registrar cantidad adquirida.",
+        "Se calcula costo unitario.",
+        "Se puede asociar a un producto o receta.",
+        "Se puede incluir como costo variable de producción."
+      ]
+    },
+    {
+      "id": "FR-012",
+      "name": "Gestionar recetas",
+      "description": "El usuario podrá definir los ingredientes y materiales necesarios para producir un producto.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero configurar la receta de cada producto para calcular su costo de producción.",
+      "acceptance_criteria": [
+        "Una receta está asociada a un producto o sabor.",
+        "La receta define una cantidad de producción base.",
+        "Se pueden agregar ingredientes.",
+        "Se pueden agregar costos externos.",
+        "Cada componente tiene una cantidad requerida.",
+        "El sistema calcula el costo total del lote.",
+        "El sistema calcula el costo unitario.",
+        "La receta puede tener versiones o historial de cambios."
+      ]
+    },
+    {
+      "id": "FR-013",
+      "name": "Calcular costo unitario",
+      "description": "El sistema calculará el costo de producir una unidad de producto.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero saber cuánto me cuesta cada arepa para establecer precios y calcular ganancias.",
+      "acceptance_criteria": [
+        "El costo incluye ingredientes configurados.",
+        "El costo incluye costos externos configurados.",
+        "El sistema divide el costo del lote entre las unidades producidas.",
+        "El costo puede expresarse en VES y USD.",
+        "El sistema utiliza la tasa correspondiente al costo de compra o una regla configurada.",
+        "El usuario puede consultar el desglose del costo."
+      ]
+    },
+    {
+      "id": "FR-014",
+      "name": "Registrar producción",
+      "description": "El usuario podrá registrar lotes de producción por producto o sabor.",
+      "priority": "must_have",
+      "user_story": "Como encargado, quiero registrar cuántas arepas produje para actualizar el inventario.",
+      "acceptance_criteria": [
+        "La producción requiere producto o sabor.",
+        "La producción requiere cantidad.",
+        "La producción requiere fecha.",
+        "Se puede asociar una receta.",
+        "El sistema calcula el costo del lote.",
+        "El inventario aumenta según la cantidad producida.",
+        "El sistema puede registrar observaciones."
+      ]
+    },
+    {
+      "id": "FR-015",
+      "name": "Gestionar inventario",
+      "description": "El sistema permitirá controlar existencias de productos terminados e insumos.",
+      "priority": "must_have",
+      "user_story": "Como propietario, quiero conocer mis existencias para evitar errores de producción y ventas.",
+      "acceptance_criteria": [
+        "Se muestra inventario de productos terminados.",
+        "Se muestra inventario de ingredientes.",
+        "Se muestra inventario de empaques.",
+        "Las ventas pueden descontar productos terminados.",
+        "La producción aumenta productos terminados.",
+        "Las compras o entradas pueden aumentar insumos.",
+        "Se pueden registrar ajustes manuales.",
+        "Cada movimiento de inventario queda auditado."
+      ]
+    },
+    {
+      "id": "FR-016",
+      "name": "Consultar reportes",
+      "description": "El usuario podrá consultar reportes financieros y operativos.",
+      "priority": "should_have",
+      "user_story": "Como propietario, quiero analizar el comportamiento del negocio por período para tomar decisiones.",
+      "acceptance_criteria": [
+        "Reporte de ventas.",
+        "Reporte de gastos.",
+        "Reporte de utilidad.",
+        "Reporte de costos.",
+        "Reporte de producción.",
+        "Reporte de inventario.",
+        "Filtros por fecha.",
+        "Filtros por producto o sabor."
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "FEAT-001",
+      "name": "Dashboard financiero",
+      "priority": "must_have",
+      "description": "Resumen de ventas, gastos, utilidad y saldo teórico.",
+      "widgets": [
+        "Ventas del período",
+        "Gastos del período",
+        "Utilidad neta estimada",
+        "Saldo teórico",
+        "Costo de ventas",
+        "Variación respecto al período anterior"
+      ]
+    },
+    {
+      "id": "FEAT-002",
+      "name": "Dashboard de producción",
+      "priority": "must_have",
+      "description": "Resumen de cantidades producidas, vendidas y disponibles.",
+      "widgets": [
+        "Total de unidades producidas",
+        "Total de unidades vendidas",
+        "Total de unidades disponibles",
+        "Inventario por sabor",
+        "Producto más vendido del período"
+      ]
+    },
+    {
+      "id": "FEAT-003",
+      "name": "Registro rápido de venta",
+      "priority": "must_have",
+      "description": "Formulario optimizado para registrar una venta en pocos pasos.",
+      "fields": [
+        "Fecha",
+        "Producto o sabor",
+        "Cantidad",
+        "Precio unitario",
+        "Moneda",
+        "Método de pago",
+        "Cliente opcional",
+        "Notas"
+      ]
+    },
+    {
+      "id": "FEAT-004",
+      "name": "Registro rápido de gasto",
+      "priority": "must_have",
+      "description": "Formulario para registrar egresos del negocio.",
+      "fields": [
+        "Fecha",
+        "Descripción",
+        "Categoría",
+        "Monto",
+        "Moneda",
+        "Método de pago",
+        "Proveedor opcional",
+        "Tipo de gasto",
+        "Notas"
+      ]
+    },
+    {
+      "id": "FEAT-005",
+      "name": "Conversor de tasas",
+      "priority": "must_have",
+      "description": "Conversión de montos entre VES, USD y referencia USDT.",
+      "supported_currencies": [
+        "VES",
+        "USD",
+        "USDT"
+      ],
+      "conversion_rules": [
+        "VES a USD = monto VES / tasa USD-VES",
+        "USD a VES = monto USD * tasa USD-VES",
+        "VES a USDT = monto VES / tasa USDT-VES",
+        "USDT a VES = monto USDT * tasa USDT-VES"
+      ]
+    },
+    {
+      "id": "FEAT-006",
+      "name": "Tasas automáticas",
+      "priority": "should_have",
+      "description": "Consultar tasas desde fuentes externas y guardar una copia local.",
+      "sources": [
+        "BCV",
+        "USDT/VES"
+      ],
+      "fallback": "Configuración manual",
+      "notes": "La aplicación debe guardar la tasa obtenida en su propia base de datos. No debe depender de que una API externa siga disponible para consultar operaciones históricas."
+    },
+    {
+      "id": "FEAT-007",
+      "name": "Recetas y estructura de costos",
+      "priority": "must_have",
+      "description": "Definir qué ingredientes y materiales requiere cada producto.",
+      "cost_components": [
+        "Ingredientes",
+        "Empaques",
+        "Bolsas",
+        "Etiquetas",
+        "Otros costos variables"
+      ]
+    },
+    {
+      "id": "FEAT-008",
+      "name": "Inventario por sabor",
+      "priority": "must_have",
+      "description": "Controlar las existencias de productos terminados por sabor.",
+      "possible_flavors": [
+        "Natural",
+        "Chía",
+        "Pimentón",
+        "Ahumado",
+        "Al ajillo",
+        "Zanahoria",
+        "Remolacha",
+        "Ají dulce",
+        "Espinaca"
+      ],
+      "notes": "Esta lista corresponde a sabores previamente considerados para el producto y debe confirmarse antes de incorporarse como configuración inicial."
+    },
+    {
+      "id": "FEAT-009",
+      "name": "Métodos de pago",
+      "priority": "should_have",
+      "description": "Clasificar las ventas y gastos según el medio utilizado.",
+      "options": [
+        "Efectivo VES",
+        "Efectivo USD",
+        "Transferencia VES",
+        "Pago móvil",
+        "Zelle",
+        "Binance Pay",
+        "USDT",
+        "Otro"
+      ],
+      "notes": "Las opciones deben ser configurables y no deben darse por definitivas sin validar los métodos utilizados por el negocio."
+    }
+  ],
+  "screens": [
+    {
+      "id": "SCR-001",
+      "name": "Dashboard",
+      "route": "/dashboard",
+      "purpose": "Mostrar el resumen financiero y operativo.",
+      "priority": "must_have",
+      "components": [
+        "Selector de período",
+        "Selector de moneda de visualización",
+        "Tarjeta de ventas",
+        "Tarjeta de gastos",
+        "Tarjeta de utilidad",
+        "Tarjeta de saldo teórico",
+        "Tarjeta de unidades producidas",
+        "Tarjeta de unidades vendidas",
+        "Tarjeta de unidades disponibles",
+        "Gráfico de ventas por mes",
+        "Lista de inventario por sabor",
+        "Acciones rápidas"
+      ],
+      "actions": [
+        "Registrar venta",
+        "Registrar gasto",
+        "Registrar producción",
+        "Actualizar tasas",
+        "Ver reportes"
+      ],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "navigation_to": [
+        "/sales/new",
+        "/expenses/new",
+        "/production/new",
+        "/rates",
+        "/reports"
+      ]
+    },
+    {
+      "id": "SCR-002",
+      "name": "Ventas",
+      "route": "/sales",
+      "purpose": "Consultar ventas registradas.",
+      "components": [
+        "Selector de fecha",
+        "Filtros por producto",
+        "Filtros por moneda",
+        "Resumen de ingresos",
+        "Lista de ventas",
+        "Botón de nueva venta"
+      ],
+      "actions": [
+        "Crear venta",
+        "Ver detalle",
+        "Editar venta",
+        "Anular venta",
+        "Filtrar ventas"
+      ]
+    },
+    {
+      "id": "SCR-003",
+      "name": "Nueva venta",
+      "route": "/sales/new",
+      "purpose": "Registrar una venta.",
+      "components": [
+        "Selector de fecha",
+        "Selector de producto o sabor",
+        "Selector de cantidad",
+        "Precio unitario",
+        "Subtotal",
+        "Moneda",
+        "Método de pago",
+        "Total",
+        "Tasa aplicada",
+        "Equivalente en USD",
+        "Notas",
+        "Botón guardar"
+      ],
+      "validation_rules": [
+        "La cantidad debe ser mayor que cero.",
+        "El precio debe ser mayor o igual a cero.",
+        "La moneda debe estar seleccionada.",
+        "La tasa debe existir para realizar la conversión.",
+        "Si el control de inventario está activo, no se debe vender más de lo disponible salvo que se permita inventario negativo."
+      ]
+    },
+    {
+      "id": "SCR-004",
+      "name": "Gastos",
+      "route": "/expenses",
+      "purpose": "Consultar gastos registrados.",
+      "components": [
+        "Selector de período",
+        "Filtros por categoría",
+        "Filtros por moneda",
+        "Resumen de gastos",
+        "Lista de gastos",
+        "Botón de nuevo gasto"
+      ],
+      "actions": [
+        "Crear gasto",
+        "Ver detalle",
+        "Editar gasto",
+        "Anular gasto",
+        "Filtrar gastos"
+      ]
+    },
+    {
+      "id": "SCR-005",
+      "name": "Nuevo gasto",
+      "route": "/expenses/new",
+      "purpose": "Registrar un gasto.",
+      "components": [
+        "Fecha",
+        "Descripción",
+        "Categoría",
+        "Tipo de gasto",
+        "Monto",
+        "Moneda",
+        "Método de pago",
+        "Proveedor",
+        "Tasa aplicada",
+        "Equivalente en USD",
+        "Notas",
+        "Botón guardar"
+      ],
+      "expense_categories": [
+        "Materia prima",
+        "Empaques",
+        "Bolsas",
+        "Transporte",
+        "Servicios",
+        "Publicidad",
+        "Equipos",
+        "Mantenimiento",
+        "Personal",
+        "Impuestos",
+        "Otros"
+      ]
+    },
+    {
+      "id": "SCR-006",
+      "name": "Productos y sabores",
+      "route": "/products",
+      "purpose": "Administrar los productos que se venden.",
+      "components": [
+        "Lista de productos",
+        "Filtro por estado",
+        "Botón nuevo producto",
+        "Cantidad disponible",
+        "Costo unitario",
+        "Precio de venta",
+        "Estado"
+      ],
+      "actions": [
+        "Crear producto",
+        "Editar producto",
+        "Activar o desactivar producto",
+        "Ver receta",
+        "Ver inventario"
+      ]
+    },
+    {
+      "id": "SCR-007",
+      "name": "Detalle de producto",
+      "route": "/products/:productId",
+      "purpose": "Consultar información de un producto o sabor.",
+      "components": [
+        "Nombre",
+        "Descripción",
+        "Imagen opcional",
+        "Precio de venta",
+        "Costo unitario",
+        "Margen estimado",
+        "Inventario disponible",
+        "Receta asociada",
+        "Historial de producción",
+        "Historial de ventas"
+      ]
+    },
+    {
+      "id": "SCR-008",
+      "name": "Ingredientes",
+      "route": "/ingredients",
+      "purpose": "Administrar materias primas e insumos.",
+      "components": [
+        "Lista de ingredientes",
+        "Unidad de medida",
+        "Costo unitario",
+        "Cantidad disponible",
+        "Último costo de compra",
+        "Botón nuevo ingrediente"
+      ],
+      "actions": [
+        "Crear ingrediente",
+        "Editar ingrediente",
+        "Registrar compra",
+        "Ver movimientos",
+        "Desactivar ingrediente"
+      ]
+    },
+    {
+      "id": "SCR-009",
+      "name": "Detalle de ingrediente",
+      "route": "/ingredients/:ingredientId",
+      "purpose": "Consultar costos e inventario de un ingrediente.",
+      "components": [
+        "Nombre",
+        "Unidad de medida",
+        "Costo unitario actual",
+        "Cantidad disponible",
+        "Historial de compras",
+        "Historial de consumo",
+        "Botón registrar entrada"
+      ]
+    },
+    {
+      "id": "SCR-010",
+      "name": "Recetas",
+      "route": "/recipes",
+      "purpose": "Administrar recetas y costos de producción.",
+      "components": [
+        "Lista de recetas",
+        "Producto asociado",
+        "Rendimiento",
+        "Costo por lote",
+        "Costo por unidad",
+        "Versión",
+        "Botón nueva receta"
+      ]
+    },
+    {
+      "id": "SCR-011",
+      "name": "Editor de receta",
+      "route": "/recipes/:recipeId/edit",
+      "purpose": "Configurar ingredientes y costos externos de una receta.",
+      "components": [
+        "Producto asociado",
+        "Cantidad de unidades producidas",
+        "Lista de ingredientes",
+        "Cantidad por ingrediente",
+        "Costo calculado por ingrediente",
+        "Lista de costos externos",
+        "Cantidad por costo externo",
+        "Costo total del lote",
+        "Costo unitario",
+        "Botón guardar"
+      ],
+      "actions": [
+        "Agregar ingrediente",
+        "Agregar costo externo",
+        "Modificar cantidad",
+        "Ver desglose de costos",
+        "Guardar receta"
+      ]
+    },
+    {
+      "id": "SCR-012",
+      "name": "Producción",
+      "route": "/production",
+      "purpose": "Consultar lotes de producción.",
+      "components": [
+        "Selector de período",
+        "Filtro por producto",
+        "Resumen de producción",
+        "Lista de lotes",
+        "Botón nueva producción"
+      ],
+      "actions": [
+        "Registrar producción",
+        "Ver detalle",
+        "Anular producción",
+        "Consultar consumo de insumos"
+      ]
+    },
+    {
+      "id": "SCR-013",
+      "name": "Nueva producción",
+      "route": "/production/new",
+      "purpose": "Registrar un lote producido.",
+      "components": [
+        "Fecha",
+        "Producto o sabor",
+        "Receta",
+        "Cantidad producida",
+        "Costo del lote",
+        "Costo unitario",
+        "Consumo estimado de insumos",
+        "Notas",
+        "Botón guardar"
+      ],
+      "validation_rules": [
+        "La cantidad producida debe ser mayor que cero.",
+        "Debe existir una receta si el cálculo automático de costos está activo.",
+        "Los insumos deben tener costos válidos.",
+        "El sistema debe confirmar si el consumo supera el inventario disponible."
+      ]
+    },
+    {
+      "id": "SCR-014",
+      "name": "Inventario",
+      "route": "/inventory",
+      "purpose": "Controlar productos terminados, ingredientes y empaques.",
+      "components": [
+        "Pestaña productos terminados",
+        "Pestaña ingredientes",
+        "Pestaña empaques",
+        "Resumen de existencias",
+        "Filtros",
+        "Lista de movimientos",
+        "Botón ajuste de inventario"
+      ],
+      "actions": [
+        "Ver existencias",
+        "Registrar ajuste",
+        "Ver movimientos",
+        "Ver alertas de stock"
+      ]
+    },
+    {
+      "id": "SCR-015",
+      "name": "Tasas de cambio",
+      "route": "/rates",
+      "purpose": "Consultar y administrar tasas de cambio.",
+      "components": [
+        "Tasa BCV actual",
+        "Tasa USDT actual",
+        "Fecha de actualización",
+        "Fuente",
+        "Botón consultar tasas",
+        "Botón registrar manualmente",
+        "Historial de tasas",
+        "Selector de tasa preferida"
+      ],
+      "actions": [
+        "Consultar API",
+        "Guardar tasa",
+        "Editar tasa manual",
+        "Ver historial",
+        "Seleccionar tasa para conversión"
+      ]
+    },
+    {
+      "id": "SCR-016",
+      "name": "Reportes",
+      "route": "/reports",
+      "purpose": "Analizar el negocio por período.",
+      "components": [
+        "Selector de período",
+        "Selector de moneda",
+        "Reporte de ventas",
+        "Reporte de gastos",
+        "Reporte de utilidad",
+        "Reporte de costos",
+        "Reporte de producción",
+        "Reporte de inventario",
+        "Gráficos",
+        "Exportación opcional"
+      ],
+      "actions": [
+        "Filtrar por fecha",
+        "Filtrar por producto",
+        "Cambiar moneda",
+        "Exportar reporte"
+      ]
+    },
+    {
+      "id": "SCR-017",
+      "name": "Configuración",
+      "route": "/settings",
+      "purpose": "Administrar preferencias y parámetros del negocio.",
+      "components": [
+        "Datos del negocio",
+        "Moneda principal",
+        "Configuración de tasas",
+        "Categorías de gastos",
+        "Métodos de pago",
+        "Reglas de inventario",
+        "Saldo inicial",
+        "Usuarios",
+        "Copia de seguridad"
+      ]
+    }
+  ],
+  "navigation": {
+    "initial_screen": "/dashboard",
+    "recommended_bottom_navigation": [
+      {
+        "label": "Inicio",
+        "route": "/dashboard",
+        "icon": "layout-dashboard"
+      },
+      {
+        "label": "Ventas",
+        "route": "/sales",
+        "icon": "shopping-cart"
+      },
+      {
+        "label": "Gastos",
+        "route": "/expenses",
+        "icon": "receipt"
+      },
+      {
+        "label": "Inventario",
+        "route": "/inventory",
+        "icon": "package"
+      },
+      {
+        "label": "Más",
+        "route": "/more",
+        "icon": "menu"
+      }
+    ],
+    "more_menu": [
+      {
+        "label": "Producción",
+        "route": "/production"
+      },
+      {
+        "label": "Productos",
+        "route": "/products"
+      },
+      {
+        "label": "Recetas y costos",
+        "route": "/recipes"
+      },
+      {
+        "label": "Ingredientes",
+        "route": "/ingredients"
+      },
+      {
+        "label": "Tasas de cambio",
+        "route": "/rates"
+      },
+      {
+        "label": "Reportes",
+        "route": "/reports"
+      },
+      {
+        "label": "Configuración",
+        "route": "/settings"
+      }
+    ],
+    "navigation_rules": [
+      "El dashboard debe ser accesible desde cualquier pantalla.",
+      "Los formularios de creación deben permitir cancelar sin guardar.",
+      "Después de guardar una operación, el usuario debe regresar al listado o ver un resumen de confirmación.",
+      "Las operaciones anuladas no deben eliminarse físicamente del historial.",
+      "Las pantallas de detalle deben permitir regresar a la lista anterior."
+    ]
+  },
+  "user_flows": [
+    {
+      "id": "FLOW-001",
+      "name": "Configuración inicial del negocio",
+      "actor": "owner",
+      "goal": "Configurar la aplicación antes de registrar operaciones.",
+      "steps": [
+        "Abrir la aplicación.",
+        "Crear el perfil del negocio.",
+        "Seleccionar moneda principal.",
+        "Configurar saldo inicial por moneda.",
+        "Configurar productos y sabores.",
+        "Registrar ingredientes y empaques.",
+        "Crear recetas.",
+        "Configurar tasas de cambio.",
+        "Acceder al dashboard."
+      ],
+      "alternative_flows": [
+        "El usuario puede omitir la configuración de recetas y completarla posteriormente.",
+        "El usuario puede introducir las tasas manualmente si no hay conexión."
+      ],
+      "error_flows": [
+        "Mostrar validación si faltan datos obligatorios.",
+        "Mostrar error si no se puede guardar la configuración."
+      ]
+    },
+    {
+      "id": "FLOW-002",
+      "name": "Actualizar tasas del día",
+      "actor": "owner",
+      "goal": "Guardar las tasas de cambio que se utilizarán en las operaciones.",
+      "steps": [
+        "Abrir Tasas de cambio.",
+        "Pulsar Consultar tasas.",
+        "El sistema consulta la fuente BCV y la fuente USDT.",
+        "Mostrar valores recibidos y fecha de actualización.",
+        "El usuario revisa los valores.",
+        "El usuario confirma guardar.",
+        "El sistema crea registros de tasas con fecha y hora.",
+        "Las nuevas operaciones utilizan la tasa configurada."
+      ],
+      "alternative_flows": [
+        "El usuario introduce una tasa manual.",
+        "El usuario utiliza la última tasa guardada si la API no está disponible."
+      ],
+      "error_flows": [
+        "La API no responde.",
+        "La API devuelve datos inválidos.",
+        "La tasa está desactualizada.",
+        "El sistema solicita confirmación antes de usar una tasa antigua."
+      ]
+    },
+    {
+      "id": "FLOW-003",
+      "name": "Registrar gasto en bolívares",
+      "actor": "owner",
+      "goal": "Registrar una salida de dinero y obtener su equivalente en dólares.",
+      "steps": [
+        "Abrir Nuevo gasto.",
+        "Seleccionar fecha.",
+        "Escribir descripción.",
+        "Seleccionar categoría.",
+        "Ingresar monto en VES.",
+        "Seleccionar método de pago.",
+        "El sistema muestra la tasa aplicable.",
+        "El sistema calcula el equivalente en USD.",
+        "El usuario guarda el gasto.",
+        "El sistema registra el movimiento y actualiza el saldo teórico."
+      ],
+      "alternative_flows": [
+        "Registrar el gasto directamente en USD.",
+        "Usar una tasa BCV o USDT según la configuración.",
+        "Modificar manualmente la tasa antes de guardar."
+      ],
+      "error_flows": [
+        "Monto inválido.",
+        "Tasa no disponible.",
+        "Categoría no seleccionada.",
+        "Error de persistencia."
+      ]
+    },
+    {
+      "id": "FLOW-004",
+      "name": "Registrar una venta",
+      "actor": "owner",
+      "goal": "Registrar una venta y actualizar ingresos e inventario.",
+      "steps": [
+        "Abrir Nueva venta.",
+        "Seleccionar fecha.",
+        "Seleccionar producto o sabor.",
+        "Ingresar cantidad.",
+        "Confirmar precio unitario.",
+        "Seleccionar moneda y método de pago.",
+        "El sistema calcula el total.",
+        "El sistema muestra la conversión a USD.",
+        "El usuario guarda la venta.",
+        "El sistema registra el ingreso.",
+        "El sistema descuenta el inventario.",
+        "El sistema calcula el costo de ventas y la utilidad estimada."
+      ],
+      "alternative_flows": [
+        "Registrar una venta con varios sabores.",
+        "Registrar una venta sin descontar inventario si el control de inventario está desactivado.",
+        "Permitir inventario negativo si el propietario lo habilita."
+      ],
+      "error_flows": [
+        "Cantidad superior al inventario disponible.",
+        "Producto inactivo.",
+        "Precio inválido.",
+        "Tasa no disponible."
+      ]
+    },
+    {
+      "id": "FLOW-005",
+      "name": "Configurar costo de una arepa",
+      "actor": "owner",
+      "goal": "Calcular el costo unitario de un producto.",
+      "steps": [
+        "Abrir Ingredientes.",
+        "Registrar ingredientes y sus costos de compra.",
+        "Registrar bolsas u otros costos externos.",
+        "Abrir Recetas.",
+        "Crear una receta para un sabor.",
+        "Definir el rendimiento del lote.",
+        "Agregar ingredientes y cantidades.",
+        "Agregar costos externos y cantidades.",
+        "El sistema calcula el costo total.",
+        "El sistema divide el costo entre las unidades producidas.",
+        "El usuario guarda la receta."
+      ],
+      "alternative_flows": [
+        "Actualizar costos de compra sin modificar manualmente la receta.",
+        "Crear una nueva versión de la receta.",
+        "Configurar costos indirectos como porcentaje adicional."
+      ],
+      "error_flows": [
+        "Ingrediente sin costo.",
+        "Cantidad inválida.",
+        "Receta sin rendimiento.",
+        "Unidad de medida incompatible."
+      ]
+    },
+    {
+      "id": "FLOW-006",
+      "name": "Registrar producción",
+      "actor": "owner",
+      "goal": "Registrar unidades producidas y actualizar inventario.",
+      "steps": [
+        "Abrir Nueva producción.",
+        "Seleccionar producto o sabor.",
+        "Seleccionar receta.",
+        "Ingresar cantidad producida.",
+        "El sistema calcula consumo de insumos.",
+        "El sistema calcula costo del lote.",
+        "El usuario confirma.",
+        "El inventario de productos terminados aumenta.",
+        "El inventario de ingredientes y empaques disminuye si se controla el consumo.",
+        "El sistema registra el movimiento."
+      ],
+      "alternative_flows": [
+        "Registrar producción sin descontar insumos automáticamente.",
+        "Registrar una producción con desperdicio.",
+        "Registrar una producción parcial."
+      ],
+      "error_flows": [
+        "No hay receta asociada.",
+        "No hay suficientes insumos.",
+        "Cantidad inválida."
+      ]
+    },
+    {
+      "id": "FLOW-007",
+      "name": "Consultar ganancias mensuales",
+      "actor": "owner",
+      "goal": "Conocer la rentabilidad de un mes.",
+      "steps": [
+        "Abrir Dashboard o Reportes.",
+        "Seleccionar un mes.",
+        "El sistema suma los ingresos por ventas.",
+        "El sistema calcula el costo de ventas.",
+        "El sistema suma los gastos operativos configurados.",
+        "El sistema calcula utilidad bruta y utilidad neta estimada.",
+        "El usuario puede ver el desglose por sabor."
+      ],
+      "alternative_flows": [
+        "Comparar dos meses.",
+        "Filtrar por producto.",
+        "Cambiar la moneda de visualización."
+      ],
+      "error_flows": [
+        "No existen operaciones para el período.",
+        "Existen productos sin costo configurado.",
+        "El sistema muestra utilidad parcial si faltan costos."
+      ]
+    },
+    {
+      "id": "FLOW-008",
+      "name": "Conciliar dinero disponible",
+      "actor": "owner",
+      "goal": "Comparar el saldo calculado con el dinero realmente disponible.",
+      "steps": [
+        "Abrir Dashboard o módulo de Finanzas.",
+        "Consultar saldo teórico por moneda.",
+        "Ingresar el saldo real contado o verificado.",
+        "El sistema calcula la diferencia.",
+        "El usuario registra una conciliación.",
+        "El sistema guarda la fecha, saldos y observaciones."
+      ],
+      "alternative_flows": [
+        "Conciliar únicamente una moneda.",
+        "Conciliar efectivo y cuentas por separado."
+      ],
+      "error_flows": [
+        "Saldo real inválido.",
+        "No hay saldo inicial configurado."
+      ]
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "BR-001",
+      "name": "Persistencia de tasa histórica",
+      "rule": "Cada operación financiera debe guardar la tasa utilizada al momento de su registro.",
+      "condition": "Se crea o edita una operación con conversión de moneda.",
+      "expected_behavior": "Actualizar la tasa actual no debe modificar el equivalente histórico de operaciones ya registradas."
+    },
+    {
+      "id": "BR-002",
+      "name": "Conversión VES a USD",
+      "rule": "El equivalente en USD se calcula dividiendo el monto en VES entre la tasa VES por USD.",
+      "condition": "La moneda original es VES.",
+      "expected_behavior": "usd_amount = ves_amount / usd_ves_rate."
+    },
+    {
+      "id": "BR-003",
+      "name": "Conversión USD a VES",
+      "rule": "El equivalente en VES se calcula multiplicando el monto en USD por la tasa VES por USD.",
+      "condition": "La moneda original es USD.",
+      "expected_behavior": "ves_amount = usd_amount * usd_ves_rate."
+    },
+    {
+      "id": "BR-004",
+      "name": "Tasa de referencia",
+      "rule": "La aplicación debe distinguir la tasa BCV de la tasa USDT.",
+      "condition": "El usuario selecciona o configura una fuente de conversión.",
+      "expected_behavior": "La operación almacena el tipo de tasa utilizado y su valor."
+    },
+    {
+      "id": "BR-005",
+      "name": "Tasa manual",
+      "rule": "El usuario puede registrar una tasa manual cuando la consulta automática no esté disponible.",
+      "condition": "La API falla o el usuario decide introducir una tasa.",
+      "expected_behavior": "La tasa queda marcada como manual y se conserva en el historial."
+    },
+    {
+      "id": "BR-006",
+      "name": "Saldo teórico",
+      "rule": "El saldo teórico es igual al saldo inicial más ingresos menos egresos.",
+      "condition": "Se consulta el saldo de un período.",
+      "expected_behavior": "El sistema calcula el saldo por moneda y su consolidado en USD."
+    },
+    {
+      "id": "BR-007",
+      "name": "Diferencia entre saldo teórico y real",
+      "rule": "El saldo teórico no representa necesariamente el efectivo real disponible.",
+      "condition": "El usuario consulta o concilia saldos.",
+      "expected_behavior": "La aplicación muestra ambos valores por separado."
+    },
+    {
+      "id": "BR-008",
+      "name": "Costo unitario",
+      "rule": "El costo unitario se obtiene dividiendo el costo total del lote entre el rendimiento del lote.",
+      "condition": "La receta tiene ingredientes, costos externos y rendimiento válido.",
+      "expected_behavior": "unit_cost = batch_cost / batch_yield."
+    },
+    {
+      "id": "BR-009",
+      "name": "Costo de ventas",
+      "rule": "El costo de ventas se calcula según las unidades vendidas y el costo unitario correspondiente.",
+      "condition": "Se registra o consulta una venta.",
+      "expected_behavior": "cost_of_sales = sum(quantity_sold * unit_cost)."
+    },
+    {
+      "id": "BR-010",
+      "name": "Utilidad bruta",
+      "rule": "La utilidad bruta es igual a ingresos por ventas menos costo de ventas.",
+      "condition": "Se consulta rentabilidad.",
+      "expected_behavior": "gross_profit = sales_revenue - cost_of_sales."
+    },
+    {
+      "id": "BR-011",
+      "name": "Utilidad neta estimada",
+      "rule": "La utilidad neta estimada es igual a utilidad bruta menos gastos operativos considerados.",
+      "condition": "Se consulta rentabilidad.",
+      "expected_behavior": "net_profit = gross_profit - operating_expenses."
+    },
+    {
+      "id": "BR-012",
+      "name": "Registro de producción",
+      "rule": "Una producción confirmada aumenta el inventario del producto terminado.",
+      "condition": "Se registra un lote de producción.",
+      "expected_behavior": "finished_goods_stock += produced_quantity."
+    },
+    {
+      "id": "BR-013",
+      "name": "Registro de venta e inventario",
+      "rule": "Una venta confirmada descuenta del inventario la cantidad vendida cuando el control de inventario está activo.",
+      "condition": "Se registra una venta.",
+      "expected_behavior": "finished_goods_stock -= sold_quantity."
+    },
+    {
+      "id": "BR-014",
+      "name": "Anulación de operaciones",
+      "rule": "Las operaciones anuladas permanecen en el historial y dejan de afectar los cálculos activos.",
+      "condition": "El usuario anula una venta, gasto o producción.",
+      "expected_behavior": "La operación cambia a estado voided y se generan ajustes de inventario o saldo cuando corresponda."
+    },
+    {
+      "id": "BR-015",
+      "name": "Redondeo",
+      "rule": "Los cálculos internos deben conservar precisión suficiente y el redondeo debe aplicarse principalmente en la presentación.",
+      "condition": "Se calculan conversiones o costos.",
+      "expected_behavior": "Evitar diferencias acumuladas por redondear prematuramente."
+    },
+    {
+      "id": "BR-016",
+      "name": "Costo de compra histórico",
+      "rule": "El costo de los insumos debe poder conservar su valor histórico para calcular costos de producción de forma consistente.",
+      "condition": "Se actualiza el precio de compra de un ingrediente.",
+      "expected_behavior": "Las producciones anteriores no cambian automáticamente su costo histórico."
+    },
+    {
+      "id": "BR-017",
+      "name": "Unidades de medida",
+      "rule": "Las cantidades de ingredientes deben utilizar unidades compatibles con las recetas.",
+      "condition": "Se agrega un ingrediente a una receta.",
+      "expected_behavior": "El sistema valida o convierte unidades como kg, g, L, ml y unidades."
+    },
+    {
+      "id": "BR-018",
+      "name": "Datos incompletos",
+      "rule": "Los reportes deben identificar cuando faltan costos o tasas para realizar un cálculo completo.",
+      "condition": "Existen operaciones o productos incompletos.",
+      "expected_behavior": "Mostrar advertencia y marcar el resultado como estimado o parcial."
+    }
+  ],
+  "data_model": {
+    "database_type": "relational",
+    "entities": [
+      {
+        "name": "businesses",
+        "description": "Negocio propietario de los datos.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "tax_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "base_currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "created_at",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "updated_at",
+            "type": "datetime",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One business has many users.",
+          "One business has many products.",
+          "One business has many financial transactions."
+        ]
+      },
+      {
+        "name": "users",
+        "description": "Usuarios con acceso al negocio.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "role",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "owner",
+              "operator"
+            ]
+          },
+          {
+            "name": "is_active",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "Many users belong to one business."
+        ]
+      },
+      {
+        "name": "products",
+        "description": "Productos o sabores comercializados.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "sku",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "required": false
+          },
+          {
+            "name": "sale_price",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "sale_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "track_inventory",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "name": "is_active",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One product can have many recipes.",
+          "One product can have many sales lines.",
+          "One product can have many production batches.",
+          "One product has one current inventory balance per location."
+        ]
+      },
+      {
+        "name": "ingredients",
+        "description": "Materias primas utilizadas en la producción.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "unit_of_measure",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "g",
+              "kg",
+              "ml",
+              "l",
+              "unit",
+              "package"
+            ]
+          },
+          {
+            "name": "current_unit_cost",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "cost_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "current_stock",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "is_active",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One ingredient can be used in many recipe components.",
+          "One ingredient has many purchase records.",
+          "One ingredient has many inventory movements."
+        ]
+      },
+      {
+        "name": "external_cost_items",
+        "description": "Bolsas, etiquetas, empaques y otros costos externos.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "unit_of_measure",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "unit",
+              "package",
+              "box",
+              "roll",
+              "other"
+            ]
+          },
+          {
+            "name": "current_unit_cost",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "cost_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "current_stock",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "is_active",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One external cost item can be used in many recipe components.",
+          "One external cost item has many purchase records.",
+          "One external cost item has many inventory movements."
+        ]
+      },
+      {
+        "name": "recipes",
+        "description": "Configuración de producción para un producto.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "product_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "batch_yield",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "yield_unit",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "version",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "status",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          }
+        ],
+        "relationships": [
+          "One recipe belongs to one product.",
+          "One recipe has many ingredient components.",
+          "One recipe has many external cost components."
+        ]
+      },
+      {
+        "name": "recipe_ingredient_components",
+        "description": "Ingredientes y cantidades requeridas por receta.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "recipe_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "ingredient_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "quantity_required",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "unit_of_measure",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "cost_snapshot",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "cost_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          }
+        ],
+        "relationships": [
+          "Many components belong to one recipe.",
+          "Each component references one ingredient."
+        ]
+      },
+      {
+        "name": "recipe_external_cost_components",
+        "description": "Costos externos requeridos por receta.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "recipe_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "external_cost_item_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "quantity_required",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "cost_snapshot",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "cost_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          }
+        ],
+        "relationships": [
+          "Many components belong to one recipe.",
+          "Each component references one external cost item."
+        ]
+      },
+      {
+        "name": "exchange_rates",
+        "description": "Historial de tasas de cambio.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "rate_type",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "BCV",
+              "USDT",
+              "MANUAL"
+            ]
+          },
+          {
+            "name": "base_currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "USD",
+              "USDT"
+            ]
+          },
+          {
+            "name": "quote_currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES"
+            ]
+          },
+          {
+            "name": "rate",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "effective_at",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "is_verified",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "name": "raw_response",
+            "type": "json",
+            "required": false
+          }
+        ],
+        "relationships": [
+          "One business has many exchange rate records.",
+          "Financial transactions can reference the exchange rate used."
+        ]
+      },
+      {
+        "name": "sales",
+        "description": "Cabecera de las ventas.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "sale_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "subtotal",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "discount",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "total",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES",
+              "USD",
+              "USDT"
+            ]
+          },
+          {
+            "name": "total_usd",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "exchange_rate_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "payment_method",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "completed",
+              "voided"
+            ]
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          },
+          {
+            "name": "created_by",
+            "type": "uuid",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One sale has many sale lines.",
+          "One sale can reference one exchange rate."
+        ]
+      },
+      {
+        "name": "sale_lines",
+        "description": "Productos incluidos en una venta.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "sale_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "product_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "quantity",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "unit_price",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "unit_cost_snapshot",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "line_total",
+            "type": "decimal",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "Many sale lines belong to one sale.",
+          "Each sale line references one product."
+        ]
+      },
+      {
+        "name": "expenses",
+        "description": "Gastos registrados.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "expense_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "expense_type",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "operating",
+              "production",
+              "inventory_purchase",
+              "capital",
+              "other"
+            ]
+          },
+          {
+            "name": "amount",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES",
+              "USD",
+              "USDT"
+            ]
+          },
+          {
+            "name": "amount_usd",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "exchange_rate_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "payment_method",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "supplier",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "completed",
+              "voided"
+            ]
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          },
+          {
+            "name": "created_by",
+            "type": "uuid",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One expense can reference one exchange rate.",
+          "One expense may generate inventory entries if associated with a purchase."
+        ]
+      },
+      {
+        "name": "production_batches",
+        "description": "Lotes de producción.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "product_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "recipe_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "production_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "quantity_produced",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "batch_cost",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "unit_cost",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "cost_currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "status",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "completed",
+              "voided"
+            ]
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          },
+          {
+            "name": "created_by",
+            "type": "uuid",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One production batch belongs to one product.",
+          "One production batch can reference one recipe."
+        ]
+      },
+      {
+        "name": "inventory_movements",
+        "description": "Movimientos de inventario.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "item_type",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "product",
+              "ingredient",
+              "external_cost_item"
+            ]
+          },
+          {
+            "name": "item_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "movement_type",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "purchase",
+              "production_in",
+              "sale_out",
+              "consumption_out",
+              "adjustment_in",
+              "adjustment_out",
+              "waste_out",
+              "return_in"
+            ]
+          },
+          {
+            "name": "quantity",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "unit_cost",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "currency",
+            "type": "enum",
+            "required": false,
+            "values": [
+              "VES",
+              "USD"
+            ]
+          },
+          {
+            "name": "reference_type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "reference_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "movement_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          }
+        ],
+        "relationships": [
+          "Inventory movements reference products or supplies polymorphically.",
+          "Movements can reference sales, production, purchases or adjustments."
+        ]
+      },
+      {
+        "name": "financial_accounts",
+        "description": "Cuentas o fondos donde se mantiene el dinero.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES",
+              "USD",
+              "USDT"
+            ]
+          },
+          {
+            "name": "opening_balance",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "is_active",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "One business has many financial accounts.",
+          "Financial transactions can belong to one financial account."
+        ]
+      },
+      {
+        "name": "financial_transactions",
+        "description": "Libro de movimientos de dinero.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "account_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "transaction_type",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "income",
+              "expense",
+              "transfer",
+              "adjustment"
+            ]
+          },
+          {
+            "name": "amount",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "currency",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "VES",
+              "USD",
+              "USDT"
+            ]
+          },
+          {
+            "name": "amount_usd",
+            "type": "decimal",
+            "required": false
+          },
+          {
+            "name": "exchange_rate_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "transaction_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "reference_type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "reference_id",
+            "type": "uuid",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "status",
+            "type": "enum",
+            "required": true,
+            "values": [
+              "completed",
+              "voided"
+            ]
+          }
+        ],
+        "relationships": [
+          "One financial transaction belongs to one financial account.",
+          "One financial transaction can reference a sale or expense.",
+          "One financial transaction can reference one exchange rate."
+        ]
+      },
+      {
+        "name": "stock_reconciliations",
+        "description": "Conciliaciones entre saldos teóricos y reales.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "account_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "reconciliation_date",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "expected_balance",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "actual_balance",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "difference",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": false
+          }
+        ],
+        "relationships": [
+          "One reconciliation belongs to one financial account."
+        ]
+      },
+      {
+        "name": "audit_logs",
+        "description": "Registro de cambios importantes.",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "business_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "entity_type",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "entity_id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "old_values",
+            "type": "json",
+            "required": false
+          },
+          {
+            "name": "new_values",
+            "type": "json",
+            "required": false
+          },
+          {
+            "name": "created_at",
+            "type": "datetime",
+            "required": true
+          }
+        ],
+        "relationships": [
+          "Audit logs belong to one business and one user."
+        ]
+      }
+    ]
+  },
+  "financial_logic": {
+    "currency_model": {
+      "primary_currency": "VES",
+      "reporting_currency": "USD",
+      "reference_currencies": [
+        "USD",
+        "USDT"
+      ],
+      "rules": [
+        "Los montos originales deben conservarse.",
+        "Los equivalentes calculados deben conservarse.",
+        "La tasa utilizada debe quedar asociada a la operación.",
+        "Las tasas BCV y USDT no deben mezclarse como si fueran la misma referencia.",
+        "El usuario debe poder elegir qué tasa utilizar para cada operación o establecer una regla predeterminada."
+      ]
+    },
+    "exchange_rate_policy": {
+      "default_rate_priority": [
+        "Tasa configurada por el usuario para la operación",
+        "Tasa predeterminada del negocio",
+        "Tasa guardada más reciente del tipo seleccionado",
+        "Consulta automática a la fuente externa"
+      ],
+      "manual_override_allowed": true,
+      "historical_rates_immutable_by_default": true,
+      "rate_freshness_warning": true,
+      "rate_types": [
+        {
+          "code": "BCV",
+          "name": "Dólar oficial BCV",
+          "description": "Tasa oficial publicada por el Banco Central de Venezuela."
+        },
+        {
+          "code": "USDT",
+          "name": "USDT/VES",
+          "description": "Tasa de referencia del USDT frente al bolívar, según la fuente seleccionada."
+        },
+        {
+          "code": "MANUAL",
+          "name": "Tasa manual",
+          "description": "Tasa introducida directamente por el usuario."
+        }
+      ]
+    },
+    "balance_calculations": {
+      "expected_balance_by_currency": "opening_balance + income - expense + adjustments",
+      "consolidated_usd_balance": "sum(balance_in_currency / applicable_usd_ves_rate)",
+      "gross_profit": "sales_revenue - cost_of_sales",
+      "net_profit_estimated": "gross_profit - operating_expenses",
+      "cost_of_sales": "sum(sold_quantity * unit_cost_snapshot)",
+      "unit_cost": "batch_cost / batch_yield",
+      "batch_cost": "sum(ingredient_component_costs) + sum(external_cost_component_costs)",
+      "notes": [
+        "El saldo financiero y la utilidad son métricas diferentes.",
+        "Comprar materia prima afecta el dinero disponible, pero no necesariamente debe contabilizarse inmediatamente como costo de ventas.",
+        "El costo de ventas debe asociarse a las unidades efectivamente vendidas.",
+        "Los gastos operativos deben poder separarse de los costos directos de producción."
+      ]
+    },
+    "accounting_scope": {
+      "type": "management_accounting",
+      "not_formal_accounting": true,
+      "notes": [
+        "La aplicación se plantea inicialmente como herramienta de control gerencial, no como sistema contable fiscal.",
+        "No debe presentarse como sustituto de un sistema contable o de obligaciones tributarias.",
+        "Las reglas de utilidad neta deben poder configurarse según cómo el negocio considere sus costos."
+      ]
+    }
+  },
+  "exchange_rate_integration": {
+    "requirement": "Consultar tasas BCV y USDT desde fuentes externas cuando sea posible, pero guardar los datos localmente.",
+    "important_note": "El Banco Central de Venezuela no ofrece una API REST oficial pública documentada equivalente a una API comercial; las integraciones suelen utilizar proveedores independientes que recopilan o redistribuyen la tasa publicada.",
+    "candidate_sources": [
+      {
+        "name": "BCV Today API",
+        "type": "third_party_public_api",
+        "purpose": "Consultar tasa BCV.",
+        "base_url": "https://bcv.today",
+        "example_endpoint": "GET /api/v1/rate.json",
+        "authentication": "No requiere API key según su documentación pública.",
+        "notes": "Debe validarse disponibilidad, exactitud, frecuencia de actualización y condiciones de uso antes de producción.",
+        "source_reference": "https://bcv.today/api/"
+      },
+      {
+        "name": "Tasa BCV API",
+        "type": "third_party_api",
+        "purpose": "Consultar dólar BCV y USDT.",
+        "base_url": "https://bcvapi.cc",
+        "example_endpoints": [
+          "GET /api/v1/dolar",
+          "GET /api/v1/usdt",
+          "GET /api/v1/rate/by-date"
+        ],
+        "authentication": "La documentación indica uso de API key para ciertos endpoints.",
+        "notes": "Revisar planes, límites, disponibilidad, términos y costos antes de elegirla.",
+        "source_reference": "https://bcvapi.cc/documentacion"
+      },
+      {
+        "name": "Tasa BCV API de código abierto",
+        "type": "self_hosted_or_public_project",
+        "purpose": "Consultar tasas BCV y referencia paralela.",
+        "example_base_url": "https://tasa-bcv-api-production.up.railway.app",
+        "example_endpoints": [
+          "GET /v1/rates/latest",
+          "GET /v1/rates/{date}",
+          "GET /v1/parallel/latest"
+        ],
+        "authentication": "La documentación indica acceso sin key para ciertos endpoints y key opcional para límites superiores.",
+        "notes": "Debe evaluarse si es apropiado depender de un proyecto externo o desplegar una instancia propia.",
+        "source_reference": "https://github.com/Gisus07/tasa-bcv-api"
+      },
+      {
+        "name": "Cotizave",
+        "type": "third_party_api",
+        "purpose": "Consultar referencias BCV, paralelo y Binance P2P.",
+        "example_endpoint": "GET /v1/fx/rates",
+        "authentication": "La documentación indica API key.",
+        "notes": "Evaluar como proveedor comercial o de respaldo.",
+        "source_reference": "https://cotizave.com/"
+      }
+    ],
+    "recommended_architecture": {
+      "pattern": "Backend-mediated exchange rate service",
+      "reason": "Evitar que la aplicación móvil dependa directamente de múltiples APIs externas y proteger claves privadas.",
+      "flow": [
+        "El backend consulta la fuente externa.",
+        "Valida el formato y la fecha.",
+        "Guarda la tasa en exchange_rates.",
+        "La aplicación móvil consulta la tasa desde el backend.",
+        "Si falla la consulta, el backend devuelve la última tasa válida y un indicador de antigüedad.",
+        "El usuario puede introducir una tasa manual."
+      ],
+      "fallbacks": [
+        "Última tasa válida guardada.",
+        "Tasa manual.",
+        "Advertencia de tasa desactualizada."
+      ],
+      "security_rules": [
+        "No incluir API keys privadas en la aplicación móvil.",
+        "No confiar ciegamente en valores recibidos desde una fuente externa.",
+        "Registrar fuente, timestamp y respuesta original cuando sea posible.",
+        "Validar que la tasa sea positiva y razonable antes de guardarla.",
+        "Permitir desactivar una fuente si deja de funcionar."
+      ]
+    }
+  },
+  "api_requirements": {
+    "style": "REST",
+    "versioning": "/api/v1",
+    "authentication": "JWT or managed authentication provider",
+    "endpoints": [
+      {
+        "method": "POST",
+        "path": "/auth/register",
+        "description": "Registrar usuario."
+      },
+      {
+        "method": "POST",
+        "path": "/auth/login",
+        "description": "Iniciar sesión."
+      },
+      {
+        "method": "GET",
+        "path": "/dashboard/summary",
+        "description": "Obtener resumen del dashboard."
+      },
+      {
+        "method": "GET",
+        "path": "/dashboard/production",
+        "description": "Obtener resumen de producción e inventario."
+      },
+      {
+        "method": "GET",
+        "path": "/products",
+        "description": "Listar productos."
+      },
+      {
+        "method": "POST",
+        "path": "/products",
+        "description": "Crear producto."
+      },
+      {
+        "method": "GET",
+        "path": "/products/{id}",
+        "description": "Obtener detalle de producto."
+      },
+      {
+        "method": "PATCH",
+        "path": "/products/{id}",
+        "description": "Actualizar producto."
+      },
+      {
+        "method": "GET",
+        "path": "/ingredients",
+        "description": "Listar ingredientes."
+      },
+      {
+        "method": "POST",
+        "path": "/ingredients",
+        "description": "Crear ingrediente."
+      },
+      {
+        "method": "GET",
+        "path": "/external-cost-items",
+        "description": "Listar costos externos."
+      },
+      {
+        "method": "POST",
+        "path": "/external-cost-items",
+        "description": "Crear costo externo."
+      },
+      {
+        "method": "GET",
+        "path": "/recipes",
+        "description": "Listar recetas."
+      },
+      {
+        "method": "POST",
+        "path": "/recipes",
+        "description": "Crear receta."
+      },
+      {
+        "method": "GET",
+        "path": "/recipes/{id}/cost",
+        "description": "Calcular desglose de costos de receta."
+      },
+      {
+        "method": "GET",
+        "path": "/sales",
+        "description": "Listar ventas con filtros."
+      },
+      {
+        "method": "POST",
+        "path": "/sales",
+        "description": "Registrar venta."
+      },
+      {
+        "method": "GET",
+        "path": "/sales/{id}",
+        "description": "Obtener detalle de venta."
+      },
+      {
+        "method": "POST",
+        "path": "/sales/{id}/void",
+        "description": "Anular venta."
+      },
+      {
+        "method": "GET",
+        "path": "/expenses",
+        "description": "Listar gastos con filtros."
+      },
+      {
+        "method": "POST",
+        "path": "/expenses",
+        "description": "Registrar gasto."
+      },
+      {
+        "method": "GET",
+        "path": "/expenses/{id}",
+        "description": "Obtener detalle de gasto."
+      },
+      {
+        "method": "POST",
+        "path": "/expenses/{id}/void",
+        "description": "Anular gasto."
+      },
+      {
+        "method": "GET",
+        "path": "/production",
+        "description": "Listar lotes de producción."
+      },
+      {
+        "method": "POST",
+        "path": "/production",
+        "description": "Registrar producción."
+      },
+      {
+        "method": "GET",
+        "path": "/inventory",
+        "description": "Consultar inventario."
+      },
+      {
+        "method": "POST",
+        "path": "/inventory/adjustments",
+        "description": "Registrar ajuste de inventario."
+      },
+      {
+        "method": "GET",
+        "path": "/exchange-rates/current",
+        "description": "Obtener tasas actuales guardadas."
+      },
+      {
+        "method": "POST",
+        "path": "/exchange-rates/sync",
+        "description": "Consultar y guardar tasas externas."
+      },
+      {
+        "method": "POST",
+        "path": "/exchange-rates/manual",
+        "description": "Guardar tasa manual."
+      },
+      {
+        "method": "GET",
+        "path": "/exchange-rates/history",
+        "description": "Consultar historial de tasas."
+      },
+      {
+        "method": "GET",
+        "path": "/reports/sales",
+        "description": "Reporte de ventas."
+      },
+      {
+        "method": "GET",
+        "path": "/reports/expenses",
+        "description": "Reporte de gastos."
+      },
+      {
+        "method": "GET",
+        "path": "/reports/profitability",
+        "description": "Reporte de rentabilidad."
+      },
+      {
+        "method": "GET",
+        "path": "/reports/production",
+        "description": "Reporte de producción."
+      },
+      {
+        "method": "GET",
+        "path": "/reports/inventory",
+        "description": "Reporte de inventario."
+      }
+    ]
+  },
+  "technical_requirements": {
+    "recommended_stack": {
+      "mobile": "React Native + Expo",
+      "language": "TypeScript",
+      "navigation": "Expo Router",
+      "state_management": "TanStack Query + Zustand or equivalent",
+      "forms": "React Hook Form",
+      "validation": "Zod",
+      "charts": "A React Native-compatible chart library",
+      "backend": "Supabase or custom Node.js backend",
+      "database": "PostgreSQL",
+      "authentication": "Supabase Auth or JWT",
+      "storage": "Supabase Storage or equivalent",
+      "notifications": "Expo Notifications, optional",
+      "deployment_mobile": "Expo Application Services",
+      "deployment_backend": "Supabase, Railway, Render, Fly.io or equivalent"
+    },
+    "architecture": {
+      "pattern": "Modular client-server architecture",
+      "layers": [
+        "Presentation",
+        "Application state",
+        "API services",
+        "Domain logic",
+        "Persistence"
+      ],
+      "modules": [
+        "auth",
+        "dashboard",
+        "sales",
+        "expenses",
+        "products",
+        "recipes",
+        "ingredients",
+        "production",
+        "inventory",
+        "exchange_rates",
+        "reports",
+        "settings"
+      ]
+    },
+    "offline_support": {
+      "required_for_mvp": false,
+      "recommended": true,
+      "details": [
+        "Permitir consultar datos previamente cargados.",
+        "Permitir registrar operaciones en una cola local si no hay conexión.",
+        "Sincronizar cuando vuelva la conexión.",
+        "Resolver conflictos con reglas explícitas.",
+        "No permitir que una tasa no confirmada se marque como oficial."
+      ]
+    },
+    "security_requirements": [
+      "Autenticación segura.",
+      "Autorización por negocio y usuario.",
+      "Aislamiento de datos entre negocios.",
+      "Validación de datos en backend.",
+      "No almacenar API keys privadas en el cliente.",
+      "Uso de HTTPS.",
+      "Registro de acciones sensibles.",
+      "Protección contra duplicación de operaciones.",
+      "Confirmación antes de anular operaciones.",
+      "Copia de seguridad de la base de datos."
+    ],
+    "performance_requirements": [
+      "Dashboard inicial en menos de 3 segundos en condiciones normales.",
+      "Listados paginados.",
+      "Consultas agregadas optimizadas.",
+      "Índices para fechas, business_id y relaciones.",
+      "Evitar recalcular todos los costos históricos en cada carga.",
+      "Cachear tasas y datos de dashboard cuando sea apropiado."
+    ]
+  },
+  "non_functional_requirements": {
+    "usability": [
+      "Interfaz en español.",
+      "Registro rápido de ventas y gastos.",
+      "Acciones frecuentes accesibles desde el dashboard.",
+      "Formularios con valores predeterminados configurables.",
+      "Mensajes de error comprensibles.",
+      "Confirmación visual después de guardar."
+    ],
+    "accessibility": [
+      "Contraste suficiente.",
+      "Tamaños de texto legibles.",
+      "Áreas táctiles adecuadas.",
+      "Etiquetas accesibles para controles.",
+      "No depender únicamente del color para indicar ganancias, pérdidas o estados."
+    ],
+    "reliability": [
+      "Las operaciones financieras no deben perderse si una consulta externa falla.",
+      "Las tasas deben conservar fecha y fuente.",
+      "Los cálculos deben ser reproducibles.",
+      "Las operaciones anuladas deben mantener trazabilidad."
+    ],
+    "maintainability": [
+      "Código modular.",
+      "Tipos compartidos entre frontend y backend.",
+      "Validaciones centralizadas.",
+      "Pruebas para cálculos financieros.",
+      "Migraciones de base de datos versionadas.",
+      "Documentación de API."
+    ]
+  },
+  "mvp_scope": {
+    "definition": "Primera versión funcional que resuelve el registro financiero, el cálculo de costos y la visualización básica del negocio.",
+    "included": [
+      "Autenticación básica.",
+      "Configuración del negocio.",
+      "Dashboard.",
+      "Registro de ventas.",
+      "Registro de gastos.",
+      "Tasas BCV y USDT manuales.",
+      "Consulta automática de tasas mediante backend.",
+      "Historial de tasas.",
+      "Productos y sabores.",
+      "Ingredientes.",
+      "Costos externos como bolsas.",
+      "Recetas.",
+      "Cálculo de costo unitario.",
+      "Registro de producción.",
+      "Inventario básico de productos terminados.",
+      "Cálculo de saldo teórico.",
+      "Cálculo de utilidad bruta y neta estimada.",
+      "Reportes básicos por fecha."
+    ],
+    "excluded": [
+      "Facturación fiscal electrónica.",
+      "Contabilidad formal.",
+      "Nómina avanzada.",
+      "Integración bancaria directa.",
+      "Multi-sucursal avanzada.",
+      "Marketplace.",
+      "Gestión avanzada de proveedores.",
+      "Predicciones de demanda.",
+      "Automatización de compras.",
+      "Integración con impresoras fiscales."
+    ],
+    "future_versions": [
+      "Multiusuario avanzado.",
+      "Multi-negocio.",
+      "Multi-sucursal.",
+      "Control de caja por turno.",
+      "Conciliación bancaria.",
+      "Notificaciones de inventario bajo.",
+      "Exportación a Excel y PDF.",
+      "Reportes fiscales.",
+      "Integración con WhatsApp.",
+      "Gestión de clientes y pedidos.",
+      "Análisis de margen por sabor.",
+      "Proyección de flujo de caja.",
+      "Soporte para múltiples presentaciones y tamaños.",
+      "Control de desperdicios más avanzado."
+    ]
+  },
+  "dashboard_specification": {
+    "default_period": "current_month",
+    "currency_display": "USD",
+    "sections": [
+      {
+        "id": "DASH-001",
+        "name": "Resumen financiero",
+        "components": [
+          {
+            "name": "Ventas",
+            "value": "Total de ventas del período",
+            "comparison": "Período anterior"
+          },
+          {
+            "name": "Gastos",
+            "value": "Total de gastos del período",
+            "comparison": "Período anterior"
+          },
+          {
+            "name": "Utilidad neta estimada",
+            "value": "Ingresos - costo de ventas - gastos operativos",
+            "comparison": "Período anterior"
+          },
+          {
+            "name": "Saldo teórico",
+            "value": "Saldo inicial + ingresos - egresos",
+            "comparison": "Saldo real opcional"
+          }
+        ]
+      },
+      {
+        "id": "DASH-002",
+        "name": "Producción e inventario",
+        "components": [
+          {
+            "name": "Unidades producidas",
+            "value": "Total de unidades producidas en el período"
+          },
+          {
+            "name": "Unidades vendidas",
+            "value": "Total de unidades vendidas en el período"
+          },
+          {
+            "name": "Unidades disponibles",
+            "value": "Existencias actuales de productos terminados"
+          },
+          {
+            "name": "Inventario por sabor",
+            "value": "Tabla o lista por producto"
+          }
+        ]
+      },
+      {
+        "id": "DASH-003",
+        "name": "Ventas por período",
+        "components": [
+          {
+            "name": "Gráfico de ventas mensuales",
+            "type": "bar_or_line_chart",
+            "metrics": [
+              "Ingresos",
+              "Unidades vendidas"
+            ]
+          },
+          {
+            "name": "Distribución por sabor",
+            "type": "bar_chart",
+            "metrics": [
+              "Unidades vendidas por sabor"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "DASH-004",
+        "name": "Acciones rápidas",
+        "components": [
+          "Registrar venta",
+          "Registrar gasto",
+          "Registrar producción",
+          "Actualizar tasas"
+        ]
+      }
+    ],
+    "empty_state": "Aún no hay movimientos. Registra tu primera venta, gasto o producción para comenzar.",
+    "warning_states": [
+      "Tasa desactualizada.",
+      "Productos sin receta.",
+      "Productos sin costo.",
+      "Inventario bajo.",
+      "Saldo teórico no conciliado."
+    ]
+  },
+  "cost_calculation_specification": {
+    "objective": "Calcular el costo real o estimado de producir cada producto.",
+    "cost_layers": [
+      {
+        "name": "Materia prima",
+        "examples": [
+          "Yuca",
+          "Sal",
+          "Chía",
+          "Pimentón",
+          "Ajo",
+          "Zanahoria",
+          "Remolacha",
+          "Ají dulce",
+          "Espinaca",
+          "Otros ingredientes"
+        ],
+        "calculation": "Cantidad utilizada * costo unitario del ingrediente"
+      },
+      {
+        "name": "Costos externos",
+        "examples": [
+          "Bolsas",
+          "Etiquetas",
+          "Empaques",
+          "Otros materiales"
+        ],
+        "calculation": "Cantidad utilizada * costo unitario del material"
+      },
+      {
+        "name": "Costos indirectos opcionales",
+        "examples": [
+          "Gas",
+          "Electricidad",
+          "Mano de obra",
+          "Transporte de producción"
+        ],
+        "calculation": "Monto directo, prorrateo por lote o porcentaje configurable"
+      }
+    ],
+    "example": {
+      "description": "Ejemplo ilustrativo de una receta. Los valores deben ser sustituidos por datos reales del negocio.",
+      "batch_yield": 100,
+      "currency": "VES",
+      "ingredients": [
+        {
+          "name": "Yuca",
+          "quantity": 10,
+          "unit": "kg",
+          "unit_cost": 2,
+          "total_cost": 20
+        },
+        {
+          "name": "Sal",
+          "quantity": 0.2,
+          "unit": "kg",
+          "unit_cost": 3,
+          "total_cost": 0.6
+        }
+      ],
+      "external_costs": [
+        {
+          "name": "Bolsa",
+          "quantity": 100,
+          "unit": "unit",
+          "unit_cost": 0.5,
+          "total_cost": 50
+        }
+      ],
+      "total_batch_cost": 70.6,
+      "unit_cost": 0.706,
+      "note": "Este ejemplo no representa precios reales; solo ilustra la estructura del cálculo."
+    },
+    "important_decisions_to_validate": [
+      "Si el costo de la bolsa se asigna a cada arepa individual o a cada paquete.",
+      "Si una receta representa una arepa, un paquete o un lote.",
+      "Si el negocio vende unidades sueltas, paquetes o ambas presentaciones.",
+      "Si el costo de producción incluye mano de obra y servicios.",
+      "Si se utiliza costo promedio, último costo o costo histórico por lote.",
+      "Si el costo de ventas se calcula por FIFO, promedio ponderado o costo estándar."
+    ]
+  },
+  "reporting_specification": {
+    "reports": [
+      {
+        "name": "Ventas por período",
+        "metrics": [
+          "Ingresos",
+          "Unidades vendidas",
+          "Ticket promedio",
+          "Ventas por sabor",
+          "Ventas por método de pago"
+        ]
+      },
+      {
+        "name": "Gastos por período",
+        "metrics": [
+          "Total de gastos",
+          "Gastos por categoría",
+          "Gastos de producción",
+          "Gastos operativos",
+          "Gastos por moneda"
+        ]
+      },
+      {
+        "name": "Rentabilidad",
+        "metrics": [
+          "Ingresos",
+          "Costo de ventas",
+          "Utilidad bruta",
+          "Gastos operativos",
+          "Utilidad neta estimada",
+          "Margen bruto",
+          "Margen neto estimado"
+        ]
+      },
+      {
+        "name": "Producción",
+        "metrics": [
+          "Unidades producidas",
+          "Unidades por sabor",
+          "Costo por lote",
+          "Costo unitario",
+          "Desperdicios opcionales"
+        ]
+      },
+      {
+        "name": "Inventario",
+        "metrics": [
+          "Existencias actuales",
+          "Entradas",
+          "Salidas",
+          "Ajustes",
+          "Valor estimado del inventario"
+        ]
+      },
+      {
+        "name": "Flujo de dinero",
+        "metrics": [
+          "Saldo inicial",
+          "Ingresos",
+          "Egresos",
+          "Transferencias",
+          "Saldo teórico",
+          "Saldo real",
+          "Diferencia de conciliación"
+        ]
+      }
+    ],
+    "filters": [
+      "Fecha inicial",
+      "Fecha final",
+      "Producto",
+      "Sabor",
+      "Categoría",
+      "Moneda",
+      "Método de pago"
+    ]
+  },
+  "testing_requirements": {
+    "unit_tests": [
+      "Conversión VES a USD.",
+      "Conversión USD a VES.",
+      "Conversión VES a USDT.",
+      "Cálculo de costo unitario.",
+      "Cálculo de costo de lote.",
+      "Cálculo de costo de ventas.",
+      "Cálculo de utilidad bruta.",
+      "Cálculo de utilidad neta estimada.",
+      "Cálculo de saldo teórico.",
+      "Cálculo de diferencia de conciliación.",
+      "Conversión de unidades de medida.",
+      "Redondeo y precisión decimal."
+    ],
+    "integration_tests": [
+      "Registrar una venta y verificar que se cree el movimiento financiero.",
+      "Registrar una venta y verificar el descuento de inventario.",
+      "Registrar un gasto y verificar el saldo teórico.",
+      "Registrar producción y verificar aumento de inventario.",
+      "Registrar producción y verificar consumo de insumos.",
+      "Actualizar una tasa y verificar que las operaciones anteriores no cambien.",
+      "Consultar una API de tasas y guardar el resultado.",
+      "Usar tasa manual cuando la API falla.",
+      "Anular una venta y verificar reversión de cálculos.",
+      "Anular una producción y verificar reversión de inventario."
+    ],
+    "acceptance_tests": [
+      "Un usuario puede configurar un producto, sus ingredientes y su receta.",
+      "Un usuario puede registrar un gasto en VES y visualizar su equivalente en USD.",
+      "Un usuario puede registrar una venta en VES y visualizar su equivalente en USD.",
+      "El dashboard muestra ventas, gastos y utilidad del mes.",
+      "El dashboard muestra cantidades por sabor.",
+      "El costo unitario cambia correctamente cuando se actualizan los costos de una nueva producción.",
+      "El saldo teórico coincide con la suma de movimientos registrados.",
+      "Una tasa nueva no altera operaciones históricas.",
+      "El usuario puede consultar la tasa BCV y USDT o introducirlas manualmente.",
+      "El usuario puede distinguir el saldo teórico del saldo real."
+    ],
+    "edge_cases": [
+      "Venta en una moneda diferente a la moneda principal.",
+      "Tasa de cambio no disponible.",
+      "Tasa desactualizada.",
+      "Tasa igual a cero o negativa.",
+      "Gasto sin categoría.",
+      "Producto sin receta.",
+      "Ingrediente sin costo.",
+      "Venta superior al inventario.",
+      "Inventario negativo permitido o bloqueado.",
+      "Anulación de una operación de un período cerrado.",
+      "Cambio de precio de venta.",
+      "Cambio de costo de ingrediente.",
+      "Producción con desperdicio.",
+      "Múltiples ventas del mismo producto.",
+      "Pérdida de conexión durante el registro."
+    ]
+  },
+  "implementation_plan": [
+    {
+      "phase": 1,
+      "name": "Definición y validación",
+      "duration_estimate": "1 semana",
+      "deliverables": [
+        "Requisitos validados.",
+        "Definición de unidades de venta.",
+        "Definición de recetas.",
+        "Definición de tasas.",
+        "Definición de categorías de gastos.",
+        "Wireframes iniciales.",
+        "Modelo de datos revisado."
+      ],
+      "dependencies": [
+        "Confirmar cómo se venden las arepas: unidad, paquete o ambas.",
+        "Confirmar qué se considera costo de producción.",
+        "Confirmar fuentes de tasas."
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Base del proyecto y autenticación",
+      "duration_estimate": "1 semana",
+      "deliverables": [
+        "Proyecto Expo configurado.",
+        "Navegación principal.",
+        "Tema visual.",
+        "Autenticación.",
+        "Base de datos.",
+        "Estructura de módulos.",
+        "Configuración de entornos."
+      ],
+      "dependencies": [
+        "Definición y validación."
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Productos, ingredientes y recetas",
+      "duration_estimate": "1-2 semanas",
+      "deliverables": [
+        "CRUD de productos.",
+        "CRUD de ingredientes.",
+        "CRUD de costos externos.",
+        "CRUD de recetas.",
+        "Cálculo de costo unitario.",
+        "Pruebas de cálculos."
+      ],
+      "dependencies": [
+        "Modelo de datos."
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Ventas, gastos y tasas",
+      "duration_estimate": "1-2 semanas",
+      "deliverables": [
+        "Registro de ventas.",
+        "Registro de gastos.",
+        "Conversión de monedas.",
+        "Historial de tasas.",
+        "Consulta automática de tasas.",
+        "Saldo teórico."
+      ],
+      "dependencies": [
+        "Módulo de tasas.",
+        "Productos configurados."
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Producción e inventario",
+      "duration_estimate": "1-2 semanas",
+      "deliverables": [
+        "Registro de producción.",
+        "Inventario de productos terminados.",
+        "Inventario de ingredientes.",
+        "Movimientos de inventario.",
+        "Consumo de insumos.",
+        "Cálculo de costo de ventas."
+      ],
+      "dependencies": [
+        "Recetas.",
+        "Ventas.",
+        "Modelo de inventario."
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "Dashboard y reportes",
+      "duration_estimate": "1 semana",
+      "deliverables": [
+        "Dashboard financiero.",
+        "Dashboard de producción.",
+        "Gráficos mensuales.",
+        "Reportes de ventas.",
+        "Reportes de gastos.",
+        "Reporte de utilidad.",
+        "Filtros por período."
+      ],
+      "dependencies": [
+        "Ventas.",
+        "Gastos.",
+        "Producción.",
+        "Inventario."
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "QA, seguridad y publicación",
+      "duration_estimate": "1 semana",
+      "deliverables": [
+        "Pruebas funcionales.",
+        "Pruebas de cálculos.",
+        "Pruebas de seguridad.",
+        "Pruebas de sincronización.",
+        "Corrección de errores.",
+        "Configuración de producción.",
+        "Build Android.",
+        "Preparación para iOS."
+      ],
+      "dependencies": [
+        "MVP funcional completo."
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "question": "¿Las arepas se venden por unidad, por paquete de 8 unidades, o por ambas presentaciones?",
+      "why_it_matters": "Define productos, inventario, recetas, precios y costos."
+    },
+    {
+      "id": "Q-002",
+      "question": "¿La bolsa de la que se habló cuesta 1200 bolívares por unidad, por paquete o por lote?",
+      "why_it_matters": "Define el costo unitario del empaque."
+    },
+    {
+      "id": "Q-003",
+      "question": "¿El costo de la bolsa se asigna a cada arepa o a cada paquete vendido?",
+      "why_it_matters": "Afecta directamente el costo real y la utilidad."
+    },
+    {
+      "id": "Q-004",
+      "question": "¿Qué ingredientes lleva exactamente cada sabor y cuál es el rendimiento de cada receta?",
+      "why_it_matters": "Es necesario para calcular el costo de producción."
+    },
+    {
+      "id": "Q-005",
+      "question": "¿El negocio quiere calcular únicamente utilidad bruta o también utilidad neta incluyendo servicios, transporte, mano de obra y otros gastos?",
+      "why_it_matters": "Define las métricas financieras."
+    },
+    {
+      "id": "Q-006",
+      "question": "¿El inventario debe controlar también ingredientes y bolsas, o solamente las arepas terminadas?",
+      "why_it_matters": "Determina la complejidad del módulo de inventario."
+    },
+    {
+      "id": "Q-007",
+      "question": "¿Se desea utilizar siempre la tasa BCV, siempre la USDT o permitir seleccionar cuál usar en cada operación?",
+      "why_it_matters": "Define la lógica de conversión."
+    },
+    {
+      "id": "Q-008",
+      "question": "¿Las ventas se cobran en bolívares, dólares, USDT o cualquier combinación?",
+      "why_it_matters": "Define monedas, métodos de pago y conciliación."
+    },
+    {
+      "id": "Q-009",
+      "question": "¿El saldo disponible debe representar efectivo, cuentas bancarias, billeteras digitales o un consolidado de todos?",
+      "why_it_matters": "Define las cuentas financieras."
+    },
+    {
+      "id": "Q-010",
+      "question": "¿Se necesita registrar compras de materia prima como entradas de inventario automáticamente al registrar un gasto?",
+      "why_it_matters": "Define la relación entre gastos e inventario."
+    },
+    {
+      "id": "Q-011",
+      "question": "¿Se requiere que la aplicación funcione sin conexión a internet?",
+      "why_it_matters": "Afecta la arquitectura y la sincronización."
+    },
+    {
+      "id": "Q-012",
+      "question": "¿La aplicación será utilizada solamente por el propietario o habrá empleados con acceso?",
+      "why_it_matters": "Define autenticación y permisos."
+    },
+    {
+      "id": "Q-013",
+      "question": "¿Se desea manejar una sola marca o varios negocios dentro de la misma cuenta?",
+      "why_it_matters": "Afecta el modelo de datos."
+    },
+    {
+      "id": "Q-014",
+      "question": "¿Se requiere exportar reportes a Excel o PDF desde la primera versión?",
+      "why_it_matters": "Define el alcance del MVP."
+    }
+  ],
+  "final_product_summary": {
+    "one_sentence": "Una app móvil de gestión para un negocio de arepas que registra ventas y gastos, convierte monedas con tasas históricas, calcula costos de producción mediante recetas e insumos, controla inventario y muestra saldo y rentabilidad.",
+    "mvp_priority_order": [
+      "Tasas y conversión",
+      "Gastos",
+      "Ventas",
+      "Productos",
+      "Ingredientes y costos externos",
+      "Recetas y costos",
+      "Producción e inventario",
+      "Dashboard",
+      "Reportes"
+    ],
+    "most_important_design_principle": "La aplicación debe separar claramente el dinero disponible, el costo de producción, el costo de ventas y la utilidad, porque son conceptos relacionados pero no equivalentes."
+  }
+}

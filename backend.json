@@ -1,0 +1,949 @@
+{
+  "project": {
+    "name": "tuyukita-fit",
+    "description": "Backend API para una aplicación móvil de gestión de ventas, gastos, costos de producción y flujo de dinero para Tuyukita Fit.",
+    "root_directory": "tuyukita-fit",
+    "backend_directory": "tuyukita-fit/backend",
+    "frontend_directory": "tuyukita-fit/frontend",
+    "version": "1.0.0",
+    "mvp_scope": "Gestión de ventas, gastos, tasa de cambio, recetas, costos de producción, ganancia bruta, dinero disponible y dashboard."
+  },
+  "architecture": {
+    "type": "REST API",
+    "pattern": "Modular monolith",
+    "architecture_style": "Feature-based layered architecture",
+    "api_prefix": "/api/v1",
+    "documentation": "Swagger/OpenAPI",
+    "authentication": "JWT access token and refresh token",
+    "authorization": "Role-based access control prepared for future expansion",
+    "language": "TypeScript"
+  },
+  "stack": {
+    "runtime": "Node.js",
+    "framework": "NestJS",
+    "database": "PostgreSQL",
+    "orm": "Prisma",
+    "package_manager": "pnpm",
+    "authentication": "JWT",
+    "password_hashing": "Argon2 or bcrypt",
+    "validation": "class-validator and class-transformer",
+    "documentation": "Swagger",
+    "testing": "Jest",
+    "logging": "Structured application logging",
+    "configuration": "@nestjs/config"
+  },
+  "business_context": {
+    "business_name": "Tuyukita Fit",
+    "business_type": "Food production and sales",
+    "main_products": "Yuca-based fit arepitas, sold individually or in packages",
+    "base_currencies": [
+      "USD",
+      "VES"
+    ],
+    "default_currency": "USD",
+    "default_package_quantity": 8,
+    "initial_flavors": [
+      "Natural",
+      "Chía",
+      "Pimentón",
+      "Ahumado",
+      "Al ajillo",
+      "Zanahoria",
+      "Remolacha",
+      "Ají dulce",
+      "Espinaca"
+    ]
+  },
+  "mvp_principles": {
+    "financial_indicators": {
+      "sales": {
+        "definition": "Total value of products sold during a selected period.",
+        "formula": "sum(quantity × unit_price)"
+      },
+      "collected_sales": {
+        "definition": "Total value of sales that have actually been collected.",
+        "formula": "sum(collected amounts)"
+      },
+      "gross_profit": {
+        "definition": "Revenue from sales minus the production cost of the products sold.",
+        "formula": "sales revenue - cost of goods sold"
+      },
+      "available_money": {
+        "definition": "Expected money in cash and accounts after collected sales, paid expenses and adjustments.",
+        "formula": "opening balance + collected sales - paid expenses + adjustments"
+      },
+      "accounts_receivable": {
+        "definition": "Sales registered but not fully collected.",
+        "formula": "sales revenue - collected amounts"
+      },
+      "pending_expenses": {
+        "definition": "Expenses registered but not yet paid.",
+        "formula": "sum(pending expense amounts)"
+      }
+    },
+    "important_rules": [
+      "Sales, gross profit and available money must be calculated and displayed as separate indicators.",
+      "A sale must not automatically be considered collected.",
+      "A sale must not automatically be considered profit.",
+      "Only collected sales affect available money.",
+      "Only paid expenses affect available money.",
+      "Pending sales must be visible as accounts receivable.",
+      "Pending expenses must be visible as obligations but must not reduce available money until paid.",
+      "Historical sales must preserve the production cost snapshot used at the time of sale.",
+      "Historical transactions must preserve the exchange rate used at the time of registration.",
+      "Financial calculations must use decimal values and never floating-point persistence."
+    ]
+  },
+  "modules": [
+    {
+      "name": "auth",
+      "scope": "mvp",
+      "responsibilities": [
+        "User registration",
+        "User login",
+        "Access token generation",
+        "Refresh token generation",
+        "Password hashing",
+        "Session management"
+      ]
+    },
+    {
+      "name": "users",
+      "scope": "mvp",
+      "responsibilities": [
+        "User profile",
+        "Business owner information",
+        "User preferences"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "scope": "mvp",
+      "responsibilities": [
+        "Sales summary",
+        "Collected sales summary",
+        "Paid expenses summary",
+        "Gross profit summary",
+        "Available money summary",
+        "Accounts receivable summary",
+        "Pending expenses summary",
+        "Units sold summary",
+        "Sales charts",
+        "Expense charts",
+        "Flavor sales charts",
+        "Recent transactions",
+        "Business alerts"
+      ]
+    },
+    {
+      "name": "exchange-rates",
+      "scope": "mvp",
+      "responsibilities": [
+        "Register daily exchange rate",
+        "Update current exchange rate",
+        "List exchange rate history",
+        "Register exchange rate source",
+        "Support manual exchange rate input",
+        "Prepare integration with BCV, USDT or another provider",
+        "Preserve the exchange rate used by historical transactions"
+      ]
+    },
+    {
+      "name": "products",
+      "scope": "mvp",
+      "responsibilities": [
+        "Create products",
+        "Update products",
+        "List products",
+        "Activate or deactivate products",
+        "Configure sales presentations",
+        "Configure package quantity"
+      ]
+    },
+    {
+      "name": "flavors",
+      "scope": "mvp",
+      "responsibilities": [
+        "Create flavors",
+        "Update flavors",
+        "List flavors",
+        "Activate or deactivate flavors"
+      ]
+    },
+    {
+      "name": "ingredients",
+      "scope": "mvp",
+      "responsibilities": [
+        "Create ingredients",
+        "Update ingredients",
+        "List ingredients",
+        "Configure measurement units",
+        "Register current ingredient cost",
+        "Register ingredient purchases",
+        "Maintain ingredient cost history"
+      ]
+    },
+    {
+      "name": "packaging",
+      "scope": "mvp",
+      "responsibilities": [
+        "Create packaging items",
+        "Update packaging items",
+        "List packaging items",
+        "Register current packaging cost",
+        "Register packaging purchases",
+        "Maintain packaging cost history"
+      ]
+    },
+    {
+      "name": "recipes",
+      "scope": "mvp",
+      "responsibilities": [
+        "Create recipes",
+        "Assign ingredients to recipes",
+        "Assign packaging to recipes",
+        "Configure recipe yield",
+        "Calculate total recipe cost",
+        "Calculate unit cost",
+        "Calculate package cost",
+        "Maintain recipe versions"
+      ]
+    },
+    {
+      "name": "product-costs",
+      "scope": "mvp",
+      "responsibilities": [
+        "Calculate current product cost",
+        "Create cost snapshots",
+        "Calculate cost per unit",
+        "Calculate cost per package",
+        "Calculate estimated gross margin",
+        "Preserve historical cost used by sales"
+      ]
+    },
+    {
+      "name": "sales",
+      "scope": "mvp",
+      "responsibilities": [
+        "Register sales",
+        "Register sale items",
+        "Register collected amounts",
+        "Register pending amounts",
+        "Register partial collections",
+        "Calculate sales revenue",
+        "Calculate production cost of sold products",
+        "Calculate gross profit",
+        "List sales",
+        "Filter sales by date, product, flavor and payment status"
+      ]
+    },
+    {
+      "name": "expenses",
+      "scope": "mvp",
+      "responsibilities": [
+        "Register expenses",
+        "Register paid expenses",
+        "Register pending expenses",
+        "Register partial payments",
+        "Assign expense categories",
+        "List expenses",
+        "Filter expenses by date, category and payment status"
+      ]
+    },
+    {
+      "name": "cash-flow",
+      "scope": "mvp",
+      "responsibilities": [
+        "Register opening balance",
+        "Register paid income movements",
+        "Register paid expense movements",
+        "Register manual adjustments",
+        "Calculate expected available money",
+        "Separate cash and account balances conceptually",
+        "List cash movements"
+      ]
+    },
+    {
+      "name": "reports",
+      "scope": "mvp",
+      "responsibilities": [
+        "Sales report",
+        "Collected sales report",
+        "Expenses report",
+        "Gross profit report",
+        "Available money report",
+        "Accounts receivable report",
+        "Pending expenses report",
+        "Sales by flavor",
+        "Sales by month",
+        "Expenses by category"
+      ]
+    },
+    {
+      "name": "settings",
+      "scope": "mvp",
+      "responsibilities": [
+        "Business name",
+        "Default currency",
+        "Default package quantity",
+        "Default exchange rate source",
+        "Dashboard preferences"
+      ]
+    }
+  ],
+  "excluded_from_mvp": [
+    "Full double-entry accounting",
+    "Tax accounting automation",
+    "Fiscal electronic invoicing",
+    "Bank API integrations",
+    "Advanced bank reconciliation",
+    "Advanced accounts payable",
+    "Advanced accounts receivable",
+    "Production batch management",
+    "Automatic raw material inventory deduction",
+    "Advanced warehouse management",
+    "Depreciation of equipment",
+    "Payroll",
+    "Multi-company accounting",
+    "Accounting ledger",
+    "Automated BCV integration if no stable provider is available"
+  ],
+  "entities": {
+    "User": {
+      "fields": [
+        "id",
+        "name",
+        "email",
+        "passwordHash",
+        "role",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RefreshToken": {
+      "fields": [
+        "id",
+        "userId",
+        "tokenHash",
+        "expiresAt",
+        "revokedAt",
+        "createdAt"
+      ]
+    },
+    "ExchangeRate": {
+      "fields": [
+        "id",
+        "date",
+        "vesPerUsd",
+        "usdPerVes",
+        "source",
+        "isManual",
+        "createdById",
+        "createdAt",
+        "updatedAt"
+      ],
+      "rules": [
+        "The rate used by a historical transaction must be stored in that transaction.",
+        "Updating the current rate must not modify historical transaction rates.",
+        "Only one active official rate should exist per source and date unless explicitly versioned."
+      ]
+    },
+    "Product": {
+      "fields": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "defaultCurrency",
+        "packageQuantity",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Flavor": {
+      "fields": [
+        "id",
+        "name",
+        "description",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Ingredient": {
+      "fields": [
+        "id",
+        "name",
+        "description",
+        "unit",
+        "currentCost",
+        "currency",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PackagingItem": {
+      "fields": [
+        "id",
+        "name",
+        "description",
+        "unit",
+        "currentCost",
+        "currency",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "IngredientPurchase": {
+      "fields": [
+        "id",
+        "ingredientId",
+        "quantity",
+        "unitCost",
+        "totalCost",
+        "currency",
+        "exchangeRateId",
+        "purchaseDate",
+        "expenseId",
+        "notes",
+        "createdAt"
+      ]
+    },
+    "PackagingPurchase": {
+      "fields": [
+        "id",
+        "packagingItemId",
+        "quantity",
+        "unitCost",
+        "totalCost",
+        "currency",
+        "exchangeRateId",
+        "purchaseDate",
+        "expenseId",
+        "notes",
+        "createdAt"
+      ]
+    },
+    "Recipe": {
+      "fields": [
+        "id",
+        "productId",
+        "flavorId",
+        "name",
+        "yieldQuantity",
+        "yieldUnit",
+        "packageQuantity",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RecipeIngredient": {
+      "fields": [
+        "id",
+        "recipeId",
+        "ingredientId",
+        "quantity",
+        "unit",
+        "costSnapshot",
+        "createdAt"
+      ]
+    },
+    "RecipePackaging": {
+      "fields": [
+        "id",
+        "recipeId",
+        "packagingItemId",
+        "quantity",
+        "costSnapshot",
+        "createdAt"
+      ]
+    },
+    "ProductCostSnapshot": {
+      "fields": [
+        "id",
+        "productId",
+        "flavorId",
+        "recipeId",
+        "ingredientCost",
+        "packagingCost",
+        "otherDirectCost",
+        "totalRecipeCost",
+        "yieldQuantity",
+        "unitCost",
+        "packageCost",
+        "currency",
+        "validFrom",
+        "validUntil",
+        "createdAt"
+      ],
+      "rules": [
+        "Every sale item must reference the cost snapshot active when the sale was registered.",
+        "Changing a recipe or ingredient price must create a new cost snapshot.",
+        "Historical sale profitability must not change when current costs change."
+      ]
+    },
+    "Sale": {
+      "fields": [
+        "id",
+        "saleNumber",
+        "saleDate",
+        "customerName",
+        "currency",
+        "exchangeRateId",
+        "exchangeRateValue",
+        "subtotal",
+        "discount",
+        "total",
+        "collectedAmount",
+        "pendingAmount",
+        "paymentStatus",
+        "notes",
+        "createdById",
+        "createdAt",
+        "updatedAt"
+      ],
+      "payment_status_values": [
+        "PAID",
+        "PARTIALLY_PAID",
+        "PENDING"
+      ],
+      "rules": [
+        "Total represents the value of products sold.",
+        "Collected amount represents money actually received.",
+        "Pending amount represents accounts receivable.",
+        "Collected amount must not exceed total.",
+        "The sale currency and exchange rate must be preserved."
+      ]
+    },
+    "SaleItem": {
+      "fields": [
+        "id",
+        "saleId",
+        "productId",
+        "flavorId",
+        "quantity",
+        "unitPrice",
+        "subtotal",
+        "costSnapshotId",
+        "unitProductionCost",
+        "totalProductionCost",
+        "grossProfit",
+        "currency",
+        "createdAt"
+      ],
+      "formulas": {
+        "subtotal": "quantity × unitPrice",
+        "totalProductionCost": "quantity × unitProductionCost",
+        "grossProfit": "subtotal - totalProductionCost"
+      }
+    },
+    "Payment": {
+      "fields": [
+        "id",
+        "saleId",
+        "amount",
+        "currency",
+        "exchangeRateId",
+        "exchangeRateValue",
+        "paymentMethod",
+        "paymentDate",
+        "cashAccountId",
+        "notes",
+        "createdAt"
+      ],
+      "payment_method_values": [
+        "CASH",
+        "BANK_TRANSFER",
+        "MOBILE_PAYMENT",
+        "ZELLE",
+        "BINANCE_USDT",
+        "CARD",
+        "OTHER"
+      ]
+    },
+    "Expense": {
+      "fields": [
+        "id",
+        "expenseNumber",
+        "expenseDate",
+        "category",
+        "description",
+        "amount",
+        "paidAmount",
+        "pendingAmount",
+        "currency",
+        "exchangeRateId",
+        "exchangeRateValue",
+        "paymentStatus",
+        "paymentMethod",
+        "supplierName",
+        "notes",
+        "createdById",
+        "createdAt",
+        "updatedAt"
+      ],
+      "category_values": [
+        "INGREDIENTS",
+        "PACKAGING",
+        "PRODUCTION",
+        "TRANSPORTATION",
+        "ELECTRICITY",
+        "WATER",
+        "GAS",
+        "RENT",
+        "MARKETING",
+        "EQUIPMENT",
+        "MAINTENANCE",
+        "COMMISSIONS",
+        "TAXES",
+        "OTHER"
+      ],
+      "payment_status_values": [
+        "PAID",
+        "PARTIALLY_PAID",
+        "PENDING"
+      ],
+      "rules": [
+        "The total amount represents the complete expense.",
+        "Paid amount represents money already disbursed.",
+        "Pending amount represents an unpaid obligation.",
+        "Only paid amount affects available money."
+      ]
+    },
+    "CashAccount": {
+      "fields": [
+        "id",
+        "name",
+        "type",
+        "currency",
+        "openingBalance",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ],
+      "type_values": [
+        "CASH",
+        "BANK_ACCOUNT",
+        "DIGITAL_WALLET",
+        "OTHER"
+      ]
+    },
+    "CashMovement": {
+      "fields": [
+        "id",
+        "cashAccountId",
+        "type",
+        "sourceType",
+        "sourceId",
+        "description",
+        "amount",
+        "currency",
+        "exchangeRateId",
+        "movementDate",
+        "createdById",
+        "createdAt"
+      ],
+      "type_values": [
+        "OPENING_BALANCE",
+        "SALE_COLLECTION",
+        "EXPENSE_PAYMENT",
+        "ADJUSTMENT_IN",
+        "ADJUSTMENT_OUT"
+      ],
+      "source_type_values": [
+        "SALE_PAYMENT",
+        "EXPENSE",
+        "MANUAL",
+        "OPENING_BALANCE"
+      ]
+    },
+    "BusinessSetting": {
+      "fields": [
+        "id",
+        "businessName",
+        "defaultCurrency",
+        "defaultPackageQuantity",
+        "defaultExchangeRateSource",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AuditLog": {
+      "fields": [
+        "id",
+        "userId",
+        "entity",
+        "entityId",
+        "action",
+        "oldValue",
+        "newValue",
+        "createdAt"
+      ]
+    }
+  },
+  "database_rules": {
+    "numeric_types": [
+      "NUMERIC",
+      "DECIMAL"
+    ],
+    "never_use_float_for_financial_persistence": true,
+    "required_historical_snapshots": [
+      "Exchange rate used by each transaction",
+      "Production cost used by each sale item",
+      "Unit price used by each sale item",
+      "Payment amounts",
+      "Expense paid amounts"
+    ],
+    "transaction_integrity": [
+      "Creating a sale and its sale items must be atomic.",
+      "Registering a payment and its cash movement must be atomic.",
+      "Registering an expense payment and its cash movement must be atomic.",
+      "Creating a recipe cost snapshot must be atomic.",
+      "Available money must not be calculated by simply adding all sales, because pending sales are excluded."
+    ]
+  },
+  "financial_calculations": {
+    "sales_revenue": "sum(saleItem.subtotal)",
+    "collected_sales": "sum(payment.amount)",
+    "cost_of_goods_sold": "sum(saleItem.totalProductionCost)",
+    "gross_profit": "sales_revenue - cost_of_goods_sold",
+    "accounts_receivable": "sales.total - sales.collectedAmount",
+    "paid_expenses": "sum(expense.paidAmount)",
+    "pending_expenses": "sum(expense.amount - expense.paidAmount)",
+    "available_money": "opening_balances + collected_sales - paid_expenses + adjustments",
+    "net_cash_flow": "collected_sales - paid_expenses + adjustments"
+  },
+  "api": {
+    "auth": [
+      "POST /auth/register",
+      "POST /auth/login",
+      "POST /auth/refresh",
+      "POST /auth/logout",
+      "GET /auth/me"
+    ],
+    "dashboard": [
+      "GET /dashboard/summary",
+      "GET /dashboard/sales-by-month",
+      "GET /dashboard/expenses-by-month",
+      "GET /dashboard/sales-vs-expenses",
+      "GET /dashboard/sales-by-flavor",
+      "GET /dashboard/gross-profit-by-product",
+      "GET /dashboard/recent-transactions",
+      "GET /dashboard/alerts"
+    ],
+    "exchange_rates": [
+      "GET /exchange-rates",
+      "GET /exchange-rates/current",
+      "GET /exchange-rates/:id",
+      "POST /exchange-rates",
+      "PATCH /exchange-rates/:id"
+    ],
+    "products": [
+      "GET /products",
+      "GET /products/:id",
+      "POST /products",
+      "PATCH /products/:id",
+      "DELETE /products/:id"
+    ],
+    "flavors": [
+      "GET /flavors",
+      "GET /flavors/:id",
+      "POST /flavors",
+      "PATCH /flavors/:id",
+      "DELETE /flavors/:id"
+    ],
+    "ingredients": [
+      "GET /ingredients",
+      "GET /ingredients/:id",
+      "POST /ingredients",
+      "PATCH /ingredients/:id",
+      "DELETE /ingredients/:id",
+      "GET /ingredients/:id/purchases",
+      "POST /ingredients/:id/purchases"
+    ],
+    "packaging": [
+      "GET /packaging",
+      "GET /packaging/:id",
+      "POST /packaging",
+      "PATCH /packaging/:id",
+      "DELETE /packaging/:id",
+      "GET /packaging/:id/purchases",
+      "POST /packaging/:id/purchases"
+    ],
+    "recipes": [
+      "GET /recipes",
+      "GET /recipes/:id",
+      "POST /recipes",
+      "PATCH /recipes/:id",
+      "DELETE /recipes/:id",
+      "GET /recipes/:id/cost",
+      "POST /recipes/:id/cost-snapshots"
+    ],
+    "product_costs": [
+      "GET /product-costs",
+      "GET /product-costs/:productId",
+      "GET /product-costs/:productId/:flavorId",
+      "POST /product-costs/recalculate"
+    ],
+    "sales": [
+      "GET /sales",
+      "GET /sales/:id",
+      "POST /sales",
+      "PATCH /sales/:id",
+      "DELETE /sales/:id",
+      "POST /sales/:id/payments",
+      "GET /sales/:id/payments",
+      "GET /sales/summary"
+    ],
+    "expenses": [
+      "GET /expenses",
+      "GET /expenses/:id",
+      "POST /expenses",
+      "PATCH /expenses/:id",
+      "DELETE /expenses/:id",
+      "POST /expenses/:id/payments",
+      "GET /expenses/:id/payments",
+      "GET /expenses/summary"
+    ],
+    "cash_flow": [
+      "GET /cash-flow/summary",
+      "GET /cash-flow/movements",
+      "POST /cash-flow/accounts",
+      "GET /cash-flow/accounts",
+      "PATCH /cash-flow/accounts/:id",
+      "POST /cash-flow/adjustments"
+    ],
+    "reports": [
+      "GET /reports/sales",
+      "GET /reports/collected-sales",
+      "GET /reports/expenses",
+      "GET /reports/gross-profit",
+      "GET /reports/available-money",
+      "GET /reports/accounts-receivable",
+      "GET /reports/pending-expenses",
+      "GET /reports/sales-by-flavor",
+      "GET /reports/sales-by-month",
+      "GET /reports/expenses-by-category"
+    ],
+    "settings": [
+      "GET /settings",
+      "PATCH /settings"
+    ]
+  },
+  "dashboard_response_example": {
+    "period": {
+      "from": "2026-01-01",
+      "to": "2026-01-31"
+    },
+    "metrics": {
+      "salesRevenue": 1500,
+      "collectedSales": 1200,
+      "grossProfit": 700,
+      "paidExpenses": 450,
+      "availableMoney": 950,
+      "accountsReceivable": 300,
+      "pendingExpenses": 100,
+      "unitsSold": 300,
+      "costOfGoodsSold": 800
+    },
+    "interpretation": {
+      "salesRevenue": "Total value of registered sales.",
+      "collectedSales": "Money actually received from customers.",
+      "grossProfit": "Sales revenue minus production cost.",
+      "availableMoney": "Expected money after collections, paid expenses and adjustments.",
+      "accountsReceivable": "Money customers still owe.",
+      "pendingExpenses": "Registered expenses that have not been fully paid."
+    }
+  },
+  "environment_variables": {
+    "NODE_ENV": "development",
+    "PORT": 3000,
+    "DATABASE_URL": "postgresql://USER:PASSWORD@localhost:5432/tuyukita_fit",
+    "JWT_ACCESS_SECRET": "replace_with_secure_secret",
+    "JWT_REFRESH_SECRET": "replace_with_secure_secret",
+    "JWT_ACCESS_EXPIRES_IN": "15m",
+    "JWT_REFRESH_EXPIRES_IN": "7d",
+    "CORS_ORIGIN": "http://localhost:8081",
+    "API_PREFIX": "api/v1"
+  },
+  "folder_structure": {
+    "backend": [
+      "src/main.ts",
+      "src/app.module.ts",
+      "src/common/",
+      "src/config/",
+      "src/database/",
+      "src/auth/",
+      "src/users/",
+      "src/dashboard/",
+      "src/exchange-rates/",
+      "src/products/",
+      "src/flavors/",
+      "src/ingredients/",
+      "src/packaging/",
+      "src/recipes/",
+      "src/product-costs/",
+      "src/sales/",
+      "src/expenses/",
+      "src/cash-flow/",
+      "src/reports/",
+      "src/settings/",
+      "prisma/schema.prisma",
+      "prisma/seed.ts",
+      "test/",
+      ".env.example",
+      "package.json",
+      "README.md"
+    ]
+  },
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "implementation_order": [
+    "Configure NestJS, Prisma and PostgreSQL",
+    "Create authentication and users",
+    "Create business settings",
+    "Create exchange rate module",
+    "Create products and flavors",
+    "Create ingredients and packaging",
+    "Create recipes and product cost calculations",
+    "Create sales and sale items",
+    "Create sale payments and accounts receivable",
+    "Create expenses and expense payments",
+    "Create cash accounts and cash movements",
+    "Create financial calculation services",
+    "Create dashboard endpoints",
+    "Create basic reports",
+    "Add unit and integration tests",
+    "Add Swagger documentation",
+    "Prepare deployment configuration"
+  ],
+  "quality_requirements": [
+    "Use DTOs for all input payloads.",
+    "Validate all monetary values.",
+    "Use database transactions for related financial operations.",
+    "Avoid duplicate financial movements.",
+    "Do not calculate authoritative financial values only on the frontend.",
+    "Keep historical exchange rates immutable at transaction level.",
+    "Keep historical production costs immutable at sale-item level.",
+    "Use pagination for lists.",
+    "Use filters for dates, statuses, products and flavors.",
+    "Provide loading, error and empty responses through consistent API structures.",
+    "Write tests for sales, payments, expenses, exchange rates, gross profit and available money."
+  ]
+}
