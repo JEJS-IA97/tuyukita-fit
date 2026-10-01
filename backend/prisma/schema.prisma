@@ -10,9 +10,9 @@ datasource db {
 model User {
   id           String   @id @default(uuid()) @map("_id")
   name         String
-  email        String   @unique
+  username     String   @unique
   passwordHash String
-  role         String   @default("OWNER")
+  role         String   @default("OPERATOR")
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -30,7 +30,7 @@ model User {
 model RefreshToken {
   id        String    @id @default(uuid()) @map("_id")
   userId    String
-  tokenHash String
+  tokenHash String    @unique
   expiresAt DateTime
   revokedAt DateTime?
   createdAt DateTime  @default(now())
@@ -38,6 +38,7 @@ model RefreshToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([expiresAt])
   @@map("refresh_tokens")
 }
 
