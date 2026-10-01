@@ -340,7 +340,7 @@ export class DashboardService {
     });
 
     return {
-      unitsProduced: result._sum.quantityProduced || 0,
+      unitsProduced: result._sum?.quantityProduced || 0,
       batchesCount: result._count,
     };
   }
