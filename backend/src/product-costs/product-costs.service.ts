@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ProductCostSnapshot } from '@prisma/client';
 
 @Injectable()
 export class ProductCostsService {
@@ -72,7 +73,7 @@ export class ProductCostsService {
       },
     });
 
-    const snapshots = [];
+    const snapshots: Array<ProductCostSnapshot> = [];
 
     for (const recipe of recipes) {
       let totalIngredientCost = 0;

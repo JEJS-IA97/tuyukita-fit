@@ -212,7 +212,10 @@ export class DashboardService {
   }
 
   async getAlerts() {
-    const alerts = [];
+    const alerts: Array<{
+      type: 'WARNING' | 'INFO' | 'ERROR';
+      message: string;
+    }> = [];
 
     const pendingSales = await this.prisma.sale.count({
       where: { paymentStatus: 'PENDING' },
