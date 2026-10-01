@@ -145,7 +145,7 @@ export class SalesService {
         },
         payments: true,
         createdBy: {
-          select: { id: true, name: true, email: true },
+          select: { id: true, name: true, username: true },
         },
       },
     });

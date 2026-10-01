@@ -86,7 +86,7 @@ export class ExpensesService {
       where: { id },
       include: {
         createdBy: {
-          select: { id: true, name: true, email: true },
+          select: { id: true, name: true, username: true },
         },
       },
     });
