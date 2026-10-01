@@ -17,12 +17,12 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  refreshTokens    RefreshToken[]
-  salesCreated     Sale[]          @relation("SalesByUser")
-  expensesCreated  Expense[]       @relation("ExpensesByUser")
-  cashMovements    CashMovement[]
-  auditLogs        AuditLog[]
-  exchangeRates    ExchangeRate[]
+  refreshTokens   RefreshToken[]
+  salesCreated    Sale[]         @relation("SalesByUser")
+  expensesCreated Expense[]      @relation("ExpensesByUser")
+  cashMovements   CashMovement[]
+  auditLogs       AuditLog[]
+  exchangeRates   ExchangeRate[]
 
   @@map("users")
 }
@@ -79,6 +79,7 @@ model Product {
   recipes              Recipe[]
   saleItems            SaleItem[]
   productCostSnapshots ProductCostSnapshot[]
+  ProductionBatch      ProductionBatch[]
 
   @@map("products")
 }
@@ -91,8 +92,8 @@ model Flavor {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  productId            String  @map("product_id")
-  product              Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId            String                @map("product_id")
+  product              Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   recipes              Recipe[]
   saleItems            SaleItem[]
   productCostSnapshots ProductCostSnapshot[]
@@ -136,17 +137,17 @@ model PackagingItem {
 }
 
 model IngredientPurchase {
-  id             String    @id @default(uuid()) @map("_id")
-  ingredientId   String    @map("ingredient_id")
+  id             String   @id @default(uuid()) @map("_id")
+  ingredientId   String   @map("ingredient_id")
   quantity       Float
-  unitCost       Float     @map("unit_cost")
-  totalCost      Float     @map("total_cost")
+  unitCost       Float    @map("unit_cost")
+  totalCost      Float    @map("total_cost")
   currency       String
-  exchangeRateId String?   @map("exchange_rate_id")
-  purchaseDate   DateTime  @map("purchase_date")
-  expenseId      String?   @map("expense_id")
+  exchangeRateId String?  @map("exchange_rate_id")
+  purchaseDate   DateTime @map("purchase_date")
+  expenseId      String?  @map("expense_id")
   notes          String?
-  createdAt      DateTime  @default(now())
+  createdAt      DateTime @default(now())
 
   ingredient   Ingredient    @relation(fields: [ingredientId], references: [id])
   exchangeRate ExchangeRate? @relation(fields: [exchangeRateId], references: [id])
@@ -156,20 +157,20 @@ model IngredientPurchase {
 }
 
 model PackagingPurchase {
-  id              String    @id @default(uuid()) @map("_id")
-  packagingItemId String    @map("packaging_item_id")
+  id              String   @id @default(uuid()) @map("_id")
+  packagingItemId String   @map("packaging_item_id")
   quantity        Float
-  unitCost        Float     @map("unit_cost")
-  totalCost       Float     @map("total_cost")
+  unitCost        Float    @map("unit_cost")
+  totalCost       Float    @map("total_cost")
   currency        String
-  exchangeRateId  String?   @map("exchange_rate_id")
-  purchaseDate    DateTime  @map("purchase_date")
-  expenseId       String?   @map("expense_id")
+  exchangeRateId  String?  @map("exchange_rate_id")
+  purchaseDate    DateTime @map("purchase_date")
+  expenseId       String?  @map("expense_id")
   notes           String?
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime @default(now())
 
-  packagingItem PackagingItem  @relation(fields: [packagingItemId], references: [id])
-  exchangeRate  ExchangeRate?   @relation(fields: [exchangeRateId], references: [id])
+  packagingItem PackagingItem @relation(fields: [packagingItemId], references: [id])
+  exchangeRate  ExchangeRate? @relation(fields: [exchangeRateId], references: [id])
 
   @@index([packagingItemId])
   @@map("packaging_purchases")
@@ -185,10 +186,10 @@ model Recipe {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  productId            String  @map("product_id")
-  product              Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  flavorId             String? @map("flavor_id")
-  flavor               Flavor? @relation(fields: [flavorId], references: [id])
+  productId            String                @map("product_id")
+  product              Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  flavorId             String?               @map("flavor_id")
+  flavor               Flavor?               @relation(fields: [flavorId], references: [id])
   recipeIngredients    RecipeIngredient[]
   recipePackaging      RecipePackaging[]
   productCostSnapshots ProductCostSnapshot[]
@@ -199,10 +200,10 @@ model Recipe {
 }
 
 model RecipeIngredient {
-  id           String  @id @default(uuid()) @map("_id")
+  id           String @id @default(uuid()) @map("_id")
   quantity     Float
   unit         String
-  costSnapshot Float?  @map("cost_snapshot")
+  costSnapshot Float? @map("cost_snapshot")
 
   recipeId     String     @map("recipe_id")
   recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
@@ -215,9 +216,9 @@ model RecipeIngredient {
 }
 
 model RecipePackaging {
-  id              String  @id @default(uuid()) @map("_id")
-  quantity        Float
-  costSnapshot    Float?  @map("cost_snapshot")
+  id           String @id @default(uuid()) @map("_id")
+  quantity     Float
+  costSnapshot Float? @map("cost_snapshot")
 
   recipeId        String        @map("recipe_id")
   recipe          Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
@@ -230,18 +231,18 @@ model RecipePackaging {
 }
 
 model ProductCostSnapshot {
-  id              String   @id @default(uuid()) @map("_id")
-  ingredientCost  Float    @map("ingredient_cost")
-  packagingCost   Float    @map("packaging_cost")
-  otherDirectCost Float    @default(0) @map("other_direct_cost")
-  totalRecipeCost Float    @map("total_recipe_cost")
-  yieldQuantity   Float    @map("yield_quantity")
-  unitCost        Float    @map("unit_cost")
-  packageCost     Float?   @map("package_cost")
+  id              String    @id @default(uuid()) @map("_id")
+  ingredientCost  Float     @map("ingredient_cost")
+  packagingCost   Float     @map("packaging_cost")
+  otherDirectCost Float     @default(0) @map("other_direct_cost")
+  totalRecipeCost Float     @map("total_recipe_cost")
+  yieldQuantity   Float     @map("yield_quantity")
+  unitCost        Float     @map("unit_cost")
+  packageCost     Float?    @map("package_cost")
   currency        String
-  validFrom       DateTime @default(now()) @map("valid_from")
+  validFrom       DateTime  @default(now()) @map("valid_from")
   validUntil      DateTime? @map("valid_until")
-  createdAt       DateTime @default(now())
+  createdAt       DateTime  @default(now())
 
   productId String  @map("product_id")
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -298,13 +299,13 @@ model SaleItem {
   currency            String
   createdAt           DateTime @default(now())
 
-  saleId         String              @map("sale_id")
-  sale           Sale                @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  productId      String              @map("product_id")
-  product        Product             @relation(fields: [productId], references: [id])
-  flavorId       String?             @map("flavor_id")
-  flavor         Flavor?             @relation(fields: [flavorId], references: [id])
-  costSnapshotId String?             @map("cost_snapshot_id")
+  saleId         String               @map("sale_id")
+  sale           Sale                 @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId      String               @map("product_id")
+  product        Product              @relation(fields: [productId], references: [id])
+  flavorId       String?              @map("flavor_id")
+  flavor         Flavor?              @relation(fields: [flavorId], references: [id])
+  costSnapshotId String?              @map("cost_snapshot_id")
   costSnapshot   ProductCostSnapshot? @relation(fields: [costSnapshotId], references: [id])
 
   @@index([saleId])
@@ -377,17 +378,17 @@ model CashAccount {
 }
 
 model CashMovement {
-  id             String    @id @default(uuid()) @map("_id")
+  id             String   @id @default(uuid()) @map("_id")
   type           String
-  sourceType     String    @map("source_type")
-  sourceId       String?   @map("source_id")
+  sourceType     String   @map("source_type")
+  sourceId       String?  @map("source_id")
   description    String
   amount         Float
   currency       String
-  exchangeRateId String?   @map("exchange_rate_id")
-  movementDate   DateTime  @map("movement_date")
-  createdById    String    @map("created_by_id")
-  createdAt      DateTime  @default(now())
+  exchangeRateId String?  @map("exchange_rate_id")
+  movementDate   DateTime @map("movement_date")
+  createdById    String   @map("created_by_id")
+  createdAt      DateTime @default(now())
 
   cashAccount   CashAccount   @relation(fields: [cashAccountId], references: [id])
   cashAccountId String        @map("cash_account_id")
@@ -427,4 +428,25 @@ model AuditLog {
   @@index([userId])
   @@index([entity, entityId])
   @@map("audit_logs")
+}
+
+model ProductionBatch {
+  id String @id @default(uuid()) @map("_id")
+
+  productId String @map("product_id")
+
+  quantityProduced Float @map("quantity_produced")
+
+  productionDate DateTime @map("production_date")
+
+  status String @default("completed")
+
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([productionDate])
+  @@index([status])
+  @@map("production_batches")
 }
