@@ -1,10 +1,10 @@
 {
   "project": {
-    "name": "tuyukita-fit",
-    "description": "Backend API para una aplicación móvil de gestión de ventas, gastos, costos de producción y flujo de dinero para Tuyukita Fit.",
-    "root_directory": "tuyukita-fit",
-    "backend_directory": "tuyukita-fit/backend",
-    "frontend_directory": "tuyukita-fit/frontend",
+    "name": "yukita-fit",
+    "description": "Backend API para una aplicación móvil de gestión de ventas, gastos, costos de producción y flujo de dinero para yukita Fit.",
+    "root_directory": "yukita-fit",
+    "backend_directory": "yukita-fit/backend",
+    "frontend_directory": "yukita-fit/frontend",
     "version": "1.0.0",
     "mvp_scope": "Gestión de ventas, gastos, tasa de cambio, recetas, costos de producción, ganancia bruta, dinero disponible y dashboard."
   },
@@ -33,7 +33,7 @@
     "configuration": "@nestjs/config"
   },
   "business_context": {
-    "business_name": "Tuyukita Fit",
+    "business_name": "yukita Fit",
     "business_type": "Food production and sales",
     "main_products": "Yuca-based fit arepitas, sold individually or in packages",
     "base_currencies": [
@@ -862,7 +862,7 @@
   "environment_variables": {
     "NODE_ENV": "development",
     "PORT": 3000,
-    "DATABASE_URL": "postgresql://USER:PASSWORD@localhost:5432/tuyukita_fit",
+    "DATABASE_URL": "postgresql://USER:PASSWORD@localhost:5432/yukita_fit",
     "JWT_ACCESS_SECRET": "replace_with_secure_secret",
     "JWT_REFRESH_SECRET": "replace_with_secure_secret",
     "JWT_ACCESS_EXPIRES_IN": "15m",
