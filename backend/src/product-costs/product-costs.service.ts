@@ -73,7 +73,7 @@ export class ProductCostsService {
       },
     });
 
-    const snapshots: Array<ProductCostSnapshot> = [];
+    const snapshots: any[] = [];
 
     for (const recipe of recipes) {
       let totalIngredientCost = 0;

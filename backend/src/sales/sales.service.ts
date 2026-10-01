@@ -11,7 +11,7 @@ export class SalesService {
     const saleNumber = await this.generateSaleNumber();
 
     let subtotal = 0;
-    const saleItems = [];
+    const saleItems: any[] = [];
 
     for (const item of dto.items) {
       const itemSubtotal = item.quantity * item.unitPrice;
@@ -26,10 +26,10 @@ export class SalesService {
         currency: dto.currency,
         unitProductionCost: item.unitProductionCost,
         totalProductionCost: item.totalProductionCost
-          ? item.quantity * item.unitProductionCost
+          ? item.quantity * (item.unitProductionCost ?? 0)
           : null,
         grossProfit: item.totalProductionCost
-          ? itemSubtotal - item.quantity * item.unitProductionCost
+          ? itemSubtotal - item.quantity * (item.unitProductionCost ?? 0)
           : null,
       });
     }
