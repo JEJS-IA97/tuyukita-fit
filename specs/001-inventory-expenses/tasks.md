@@ -8,19 +8,19 @@ Cada tarea se implementa con pruebas primero, se ejecuta su suite aplicable y re
   - RF: soporte para la spec.
   - Hecho cuando: `frontend/` contiene el proyecto Expo y el comando de desarrollo inicia sin errores.
 
-- [ ] **T002 - Configurar navegacion base y tema de marca del cliente**
+- [x] **T002 - Configurar navegacion base y tema de marca del cliente**
   - RF: soporte para la spec.
   - Hecho cuando: Expo Router muestra navegacion para Inicio, Inventario y Gastos con tokens de color de Yukita Fit.
 
-- [ ] **T003 - Configurar pruebas y lint del cliente movil**
+- [x] **T003 - Configurar pruebas y lint del cliente movil**
   - RF: soporte para la spec.
   - Hecho cuando: existe una prueba de componente basica y los comandos de prueba y lint finalizan en verde.
 
-- [ ] **T004 - Establecer base de pruebas del backend para los nuevos modulos**
+- [x] **T004 - Establecer base de pruebas del backend para los nuevos modulos**
   - RF: soporte para la spec.
   - Hecho cuando: Jest ejecuta una prueba de servicio con Prisma simulado sin afectar la base de datos.
 
-- [ ] **T005 - Verificar respaldo y soporte transaccional de la base de datos de desarrollo**
+- [x] **T005 - Verificar respaldo y soporte transaccional de la base de datos de desarrollo**
   - RF: soporte para RF-005, RF-009b y RF-012b.
   - Hecho cuando: queda documentado el respaldo realizado o la ausencia de datos, y se verifica que el entorno admite transacciones antes de aplicar el esquema.
 

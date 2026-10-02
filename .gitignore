@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 backend/.env
+
+# Respaldos locales de la base de datos (contienen datos de usuarios)
+backend/backups/

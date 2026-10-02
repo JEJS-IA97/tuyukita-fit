@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,'Segoe UI',Roboto,sans-serif; }
+  body { width:390px; height:844px; background:#F6F8F6; color:#141414; position:relative; overflow:hidden; }
+  .header { background:#014325; color:#fff; padding:18px 20px 16px; display:flex; justify-content:space-between; align-items:center; }
+  .header h1 { font-size:20px; font-weight:700; }
+  .avatar { width:34px; height:34px; border-radius:50%; background:#82BB2C; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+  .content { padding:16px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E3E9E4; border-radius:20px; padding:7px 14px; font-size:13px; font-weight:600; color:#014325; margin-bottom:14px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .card { background:#fff; border:1px solid #E3E9E4; border-radius:16px; padding:14px; }
+  .card .label { font-size:11px; font-weight:600; color:#6B7671; text-transform:uppercase; letter-spacing:.4px; }
+  .card .value { font-size:20px; font-weight:800; margin-top:4px; color:#141414; }
+  .card .sub { font-size:12px; margin-top:2px; font-weight:600; }
+  .up { color:#5E9E14; } .down { color:#C98200; } .accent { color:#014325; }
+  .bar { height:5px; border-radius:3px; background:#E3E9E4; margin-top:8px; overflow:hidden; }
+  .bar i { display:block; height:100%; border-radius:3px; background:#82BB2C; }
+  .actions { display:flex; gap:8px; margin-bottom:16px; }
+  .btn { flex:1; text-align:center; padding:11px 0; border-radius:12px; font-size:13px; font-weight:700; }
+  .btn-p { background:#014325; color:#fff; }
+  .btn-g { background:#82BB2C; color:#fff; }
+  .btn-o { background:#fff; color:#014325; border:1px solid #014325; }
+  .section-title { font-size:13px; font-weight:700; color:#014325; margin:0 0 10px; text-transform:uppercase; letter-spacing:.5px; }
+  .flavor { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E3E9E4; border-radius:14px; padding:12px 14px; margin-bottom:8px; }
+  .flavor .dot { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .flavor .name { font-size:14px; font-weight:700; flex:1; }
+  .flavor .qty { font-size:14px; font-weight:800; color:#014325; }
+  .flavor .unit { font-size:11px; color:#6B7671; }
+  .tabbar { position:absolute; bottom:0; left:0; right:0; height:64px; background:#fff; border-top:1px solid #E3E9E4; display:flex; }
+  .tab { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:10px; font-weight:600; color:#8A9490; padding-top:4px; }
+  .tab.active { color:#014325; }
+  .tab svg { width:22px; height:22px; }
+  .badge { position:absolute; top:14px; right:0; left:0; margin:auto; width:8px; height:8px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Inicio</h1>
+    <div class="avatar">J</div>
+  </div>
+  <div class="content">
+    <div class="chip">Octubre 2026 ▾</div>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Ventas</div>
+        <div class="value">Bs 1.250.000</div>
+        <div class="sub up">$52,08 ▲ 12%</div>
+      </div>
+      <div class="card">
+        <div class="label">Gastos</div>
+        <div class="value">Bs 480.000</div>
+        <div class="sub down">$20,00 ▲ 4%</div>
+      </div>
+      <div class="card">
+        <div class="label">Ganancia bruta</div>
+        <div class="value" style="color:#5E9E14">$32,08</div>
+        <div class="sub" style="color:#6B7671">ingresos − costo ventas</div>
+      </div>
+      <div class="card">
+        <div class="label">Saldo teórico</div>
+        <div class="value accent">$1.850,00</div>
+        <div class="sub" style="color:#6B7671">efectivo + cuentas</div>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="btn btn-g">+ Venta</div>
+      <div class="btn btn-p">+ Gasto</div>
+      <div class="btn btn-o">Tasas</div>
+    </div>
+    <div class="section-title">Ventas por sabor</div>
+    <div class="flavor">
+      <div class="dot" style="background:#EAF4DC">🌿</div>
+      <div class="name">Natural<div class="bar"><i style="width:85%"></i></div></div>
+      <div style="text-align:right"><div class="qty">120</div><div class="unit">uds</div></div>
+    </div>
+    <div class="flavor">
+      <div class="dot" style="background:#FDF0D9">🧡</div>
+      <div class="name">Zanahoria<div class="bar"><i style="width:60%;background:#F9B02D"></i></div></div>
+      <div style="text-align:right"><div class="qty">85</div><div class="unit">uds</div></div>
+    </div>
+    <div class="flavor">
+      <div class="dot" style="background:#FBE4E4">❤️</div>
+      <div class="name">Remolacha<div class="bar"><i style="width:45%;background:#D96A6A"></i></div></div>
+      <div style="text-align:right"><div class="qty">64</div><div class="unit">uds</div></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"/></svg>Inicio</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Inventario</div>
+    <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>Gastos</div>
+  </div>
+</body>
+</html>

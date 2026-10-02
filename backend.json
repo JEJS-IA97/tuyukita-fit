@@ -21,7 +21,7 @@
   "stack": {
     "runtime": "Node.js",
     "framework": "NestJS",
-    "database": "PostgreSQL",
+    "database": "MongoDB",
     "orm": "Prisma",
     "package_manager": "pnpm",
     "authentication": "JWT",
@@ -862,7 +862,7 @@
   "environment_variables": {
     "NODE_ENV": "development",
     "PORT": 3000,
-    "DATABASE_URL": "postgresql://USER:PASSWORD@localhost:5432/yukita_fit",
+    "DATABASE_URL": "mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/yukita-fit",
     "JWT_ACCESS_SECRET": "replace_with_secure_secret",
     "JWT_REFRESH_SECRET": "replace_with_secure_secret",
     "JWT_ACCESS_EXPIRES_IN": "15m",
@@ -915,7 +915,7 @@
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "implementation_order": [
-    "Configure NestJS, Prisma and PostgreSQL",
+    "Configure NestJS, Prisma and MongoDB",
     "Create authentication and users",
     "Create business settings",
     "Create exchange rate module",

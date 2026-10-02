@@ -2991,7 +2991,7 @@
       "validation": "Zod",
       "charts": "A React Native-compatible chart library",
       "backend": "Supabase or custom Node.js backend",
-      "database": "PostgreSQL",
+      "database": "MongoDB",
       "authentication": "Supabase Auth or JWT",
       "storage": "Supabase Storage or equivalent",
       "notifications": "Expo Notifications, optional",
