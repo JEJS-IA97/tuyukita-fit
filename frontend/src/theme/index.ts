@@ -10,6 +10,11 @@ export const colors = {
   border: '#E3E9E4',
   tabBarInactive: '#8A9490',
   onPrimary: '#FFFFFF',
+  up: '#5E9E14',
+  down: '#C98200',
+  softGreen: '#EAF4DC',
+  softAmber: '#FDF0D9',
+  softRed: '#FBE4E4',
 } as const;
 
 export type ColorToken = keyof typeof colors;

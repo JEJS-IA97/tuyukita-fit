@@ -26,6 +26,7 @@ dist-ssr
 # Variables de entorno
 .env
 .env.*
+!.env.example
 backend/.env
 
 # Respaldos locales de la base de datos (contienen datos de usuarios)
