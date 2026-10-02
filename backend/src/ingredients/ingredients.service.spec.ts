@@ -18,8 +18,15 @@ describe('IngredientsService (Prisma simulated)', () => {
     ingredientPurchase: {
       create: jest.fn(),
       findMany: jest.fn(),
+      count: jest.fn(),
       delete: jest.fn(),
       deleteMany: jest.fn(),
+    },
+    inventoryLot: {
+      count: jest.fn(),
+    },
+    inventoryMovement: {
+      count: jest.fn(),
     },
   };
 
@@ -203,6 +210,128 @@ describe('IngredientsService (Prisma simulated)', () => {
       await expect(
         service.update('missing', { description: 'x' }),
       ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('deactivate (RF-003)', () => {
+    it('deactivates an ingredient with history keeping it and its records', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue({
+        id: 'ing-1',
+        name: 'Yuca',
+        normalizedName: 'yuca',
+        unit: 'kg',
+        isActive: true,
+        purchases: [],
+      });
+      prismaMock.ingredient.update.mockResolvedValue({ isActive: false });
+
+      const result = await service.deactivate('ing-1');
+
+      expect(result).toEqual({ isActive: false });
+      expect(prismaMock.ingredient.update).toHaveBeenCalledWith({
+        where: { id: 'ing-1' },
+        data: { isActive: false },
+      });
+      expect(prismaMock.ingredient.delete).not.toHaveBeenCalled();
+      expect(prismaMock.ingredientPurchase.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('remove (RF-003, RF-003a)', () => {
+    const existingIngredient = {
+      id: 'ing-1',
+      name: 'Yuca',
+      normalizedName: 'yuca',
+      unit: 'kg',
+      isActive: true,
+      purchases: [],
+    };
+
+    it('deactivates instead of deleting when history exists (RF-003)', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(existingIngredient);
+      prismaMock.ingredientPurchase.count.mockResolvedValue(2);
+      prismaMock.inventoryLot.count.mockResolvedValue(1);
+      prismaMock.inventoryMovement.count.mockResolvedValue(0);
+      prismaMock.ingredient.update.mockResolvedValue({ isActive: false });
+
+      await service.remove('ing-1');
+
+      expect(prismaMock.ingredient.update).toHaveBeenCalledWith({
+        where: { id: 'ing-1' },
+        data: { isActive: false },
+      });
+      expect(prismaMock.ingredient.delete).not.toHaveBeenCalled();
+    });
+
+    it('deletes permanently when there is no history (RF-003a)', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(existingIngredient);
+      prismaMock.ingredientPurchase.count.mockResolvedValue(0);
+      prismaMock.inventoryLot.count.mockResolvedValue(0);
+      prismaMock.inventoryMovement.count.mockResolvedValue(0);
+      prismaMock.ingredient.delete.mockResolvedValue(existingIngredient);
+
+      await service.remove('ing-1');
+
+      expect(prismaMock.ingredient.delete).toHaveBeenCalledWith({
+        where: { id: 'ing-1' },
+      });
+      expect(prismaMock.ingredient.update).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundException for unknown ingredients', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(null);
+
+      await expect(service.remove('missing')).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(prismaMock.ingredient.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('unit blocking (RF-004)', () => {
+    const existingIngredient = {
+      id: 'ing-1',
+      name: 'Yuca',
+      normalizedName: 'yuca',
+      unit: 'kg',
+      isActive: true,
+      purchases: [],
+    };
+
+    it('rejects unit change when inventory lots exist', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(existingIngredient);
+      prismaMock.inventoryLot.count.mockResolvedValue(3);
+      prismaMock.inventoryMovement.count.mockResolvedValue(0);
+
+      await expect(
+        service.update('ing-1', { unit: 'g' }),
+      ).rejects.toThrow(ConflictException);
+      expect(prismaMock.ingredient.update).not.toHaveBeenCalled();
+    });
+
+    it('rejects unit change when movements exist', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(existingIngredient);
+      prismaMock.inventoryLot.count.mockResolvedValue(0);
+      prismaMock.inventoryMovement.count.mockResolvedValue(1);
+
+      await expect(
+        service.update('ing-1', { unit: 'g' }),
+      ).rejects.toThrow(ConflictException);
+      expect(prismaMock.ingredient.update).not.toHaveBeenCalled();
+    });
+
+    it('allows unit change without inventory or movements', async () => {
+      prismaMock.ingredient.findUnique.mockResolvedValue(existingIngredient);
+      prismaMock.inventoryLot.count.mockResolvedValue(0);
+      prismaMock.inventoryMovement.count.mockResolvedValue(0);
+      prismaMock.ingredient.update.mockResolvedValue({ id: 'ing-1' });
+
+      await service.update('ing-1', { unit: 'g' });
+
+      expect(prismaMock.ingredient.update).toHaveBeenCalledWith({
+        where: { id: 'ing-1' },
+        data: { unit: 'g' },
+      });
     });
   });
 

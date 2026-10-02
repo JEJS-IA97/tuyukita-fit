@@ -89,6 +89,7 @@ Los importes, tasas y cantidades se representaran como enteros de unidades menor
 | Consistencia de compra | Transaccion de base de datos | Crear gasto, compra y lote por separado | Impide gastos sin lote o lotes sin gasto. |
 | Correcciones FIFO | Recalculo completo por ingrediente y fecha | Ajustar solo el lote editado | Mantiene correctos los consumos posteriores y su costo historico. |
 | Eliminacion | Borrado solo sin historial; desactivacion con historial | Borrado fisico de todo registro | Protege auditoria y reportes futuros. |
+| Gasto de compra | La API marca el gasto como anulado (desactivado); nunca lo borra fisicamente. Reactivar/desactivar y el borrado fisico solo desde la base de datos (sin endpoint de toggle) | Borrar el gasto al eliminar la compra o exponer toggle en la API | Decision del usuario: el gasto conserva historial y solo se anula; los gastos anulados se excluyen de listados y reportes, visibles solo en auditoria. |
 
 MongoDB debera ejecutarse en una configuracion compatible con transacciones antes de activar compras y recalculos en produccion.
 

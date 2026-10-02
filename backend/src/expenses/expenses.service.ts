@@ -1,10 +1,57 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
+import { CreateManualExpenseDto } from './dto/create-manual-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { ExchangeRatesService } from '../exchange-rates/exchange-rates.service';
+import { AuditService } from '../audit/audit.service';
+import { toMinor, vesToUsd } from '../common/money';
 
 @Injectable()
 export class ExpensesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private exchangeRates: ExchangeRatesService,
+    private audit: AuditService,
+  ) {}
+
+  async createManual(dto: CreateManualExpenseDto, userId: string) {
+    const rate = await this.exchangeRates.getLatestValid(dto.rateType);
+    if (!rate) {
+      throw new NotFoundException(
+        `No valid ${dto.rateType} exchange rate has ever been registered`,
+      );
+    }
+
+    const expenseNumber = await this.generateExpenseNumber();
+    const paidAmount = dto.paidAmount || 0;
+
+    return this.prisma.expense.create({
+      data: {
+        expenseNumber,
+        expenseDate: dto.expenseDate ? new Date(dto.expenseDate) : new Date(),
+        category: dto.category,
+        categoryId: dto.categoryId ?? null,
+        description: dto.description,
+        amount: dto.amountVes,
+        paidAmount,
+        pendingAmount: dto.amountVes - paidAmount,
+        currency: 'VES',
+        amountVesMinor: toMinor(dto.amountVes),
+        amountUsdMinor: toMinor(vesToUsd(dto.amountVes, rate.vesPerUsd)),
+        exchangeRateId: rate.id,
+        exchangeRateValue: rate.vesPerUsd,
+        exchangeRateType: rate.rateType,
+        exchangeRateSource: rate.source,
+        exchangeRateDate: rate.date,
+        paymentStatus: this.calculatePaymentStatus(dto.amountVes, paidAmount),
+        paymentMethod: dto.paymentMethod,
+        supplierName: dto.supplierName,
+        notes: dto.notes,
+        createdById: userId,
+      },
+    });
+  }
 
   async create(dto: CreateExpenseDto, userId: string) {
     const expenseNumber = await this.generateExpenseNumber();
@@ -60,6 +107,8 @@ export class ExpensesService {
       where.paymentStatus = filters.paymentStatus;
     }
 
+    where.isActive = true;
+
     const [expenses, total] = await Promise.all([
       this.prisma.expense.findMany({
         where,
@@ -98,17 +147,79 @@ export class ExpensesService {
     return expense;
   }
 
-  async update(id: string, dto: Partial<CreateExpenseDto>) {
-    await this.findById(id);
+  async update(id: string, dto: UpdateExpenseDto, userId: string) {
+    const expense = await this.findById(id);
 
-    return this.prisma.expense.update({
-      where: { id },
-      data: dto,
+    const linked = await this.prisma.ingredientPurchase.findFirst({
+      where: { expenseId: id },
+    });
+    if (linked) {
+      throw new ConflictException(
+        'Expense is linked to a purchase; correct the purchase instead',
+      );
+    }
+
+    const amount = dto.amount ?? expense.amount;
+    const paidAmount = dto.paidAmount ?? expense.paidAmount;
+    const data: any = {
+      ...dto,
+      expenseDate: dto.expenseDate ? new Date(dto.expenseDate) : undefined,
+      paidAmount,
+      pendingAmount: amount - paidAmount,
+      paymentStatus: this.calculatePaymentStatus(amount, paidAmount),
+    };
+    if (dto.amount !== undefined && expense.currency === 'VES') {
+      data.amountVesMinor = toMinor(dto.amount);
+      if (expense.exchangeRateValue) {
+        data.amountUsdMinor = toMinor(dto.amount / expense.exchangeRateValue);
+      }
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.expense.update({ where: { id }, data });
+      await this.audit.record(tx, {
+        userId,
+        entity: 'expense',
+        entityId: id,
+        action: 'UPDATE',
+        oldValue: expense,
+        newValue: updated,
+      });
+      return updated;
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const expense = await this.findById(id);
+
+    const linked = await this.prisma.ingredientPurchase.findFirst({
+      where: { expenseId: id },
+    });
+    if (linked) {
+      throw new ConflictException(
+        'Expense is linked to a purchase; delete the purchase instead',
+      );
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.expense.update({
+        where: { id },
+        data: { isActive: false },
+      });
+      await this.audit.record(tx, {
+        userId,
+        entity: 'expense',
+        entityId: id,
+        action: 'ANULAR',
+        oldValue: { isActive: expense.isActive },
+        newValue: { isActive: false },
+      });
+      return updated;
     });
   }
 
   async getSummary(startDate?: string, endDate?: string) {
-    const where: any = {};
+    const where: any = { isActive: true };
 
     if (startDate || endDate) {
       where.expenseDate = {};
