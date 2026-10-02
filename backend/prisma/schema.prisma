@@ -49,20 +49,23 @@ model ExchangeRate {
   date        DateTime
   vesPerUsd   Float    @map("ves_per_usd")
   usdPerVes   Float    @map("usd_per_ves")
+  valueMinor  Int?     @map("value_minor")
+  rateType    String   @default("BCV") @map("rate_type")
   source      String
   isManual    Boolean  @default(false) @map("is_manual")
-  createdById String   @map("created_by_id")
+  fetchedAt   DateTime @default(now()) @map("fetched_at")
+  createdById String?  @map("created_by_id")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  createdBy           User                 @relation(fields: [createdById], references: [id])
+  createdBy           User?                @relation(fields: [createdById], references: [id])
   sales               Sale[]
   expenses            Expense[]
   cashMovements       CashMovement[]
   ingredientPurchases IngredientPurchase[]
   packagingPurchases  PackagingPurchase[]
 
-  @@unique([date, source])
+  @@unique([date, source, rateType])
   @@index([date])
   @@map("exchange_rates")
 }
@@ -202,6 +205,7 @@ model PackagingItem {
 model IngredientPurchase {
   id                 String    @id @default(uuid()) @map("_id")
   ingredientId       String    @map("ingredient_id")
+  unit               String?
   quantity           Float
   unitCost           Float     @map("unit_cost")
   totalCost          Float     @map("total_cost")
@@ -422,8 +426,9 @@ model Expense {
   exchangeRateDate    DateTime? @map("exchange_rate_date")
   paymentStatus       String    @default("PENDING") @map("payment_status")
   paymentMethod       String?   @map("payment_method")
-  supplierName        String?   @map("supplier_name")
+  supplierName        String?
   notes               String?
+  isActive            Boolean   @default(true) @map("is_active")
   createdById         String    @map("created_by_id")
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

@@ -81,10 +81,46 @@ export class IngredientsService {
       data.normalizedName = normalizedName;
     }
 
+    if (dto.unit !== undefined && dto.unit !== current.unit) {
+      if (await this.hasInventoryOrMovements(id)) {
+        throw new ConflictException(
+          'Cannot change the unit of an ingredient with inventory or movements',
+        );
+      }
+    }
+
     return this.prisma.ingredient.update({
       where: { id },
       data,
     });
+  }
+
+  private async hasInventoryOrMovements(id: string): Promise<boolean> {
+    const [lots, movements] = await Promise.all([
+      this.prisma.inventoryLot.count({ where: { ingredientId: id } }),
+      this.prisma.inventoryMovement.count({ where: { ingredientId: id } }),
+    ]);
+    return lots + movements > 0;
+  }
+
+  private async hasHistory(id: string): Promise<boolean> {
+    const purchases = await this.prisma.ingredientPurchase.count({
+      where: { ingredientId: id },
+    });
+    return purchases > 0 || (await this.hasInventoryOrMovements(id));
+  }
+
+  async remove(id: string) {
+    await this.findById(id);
+
+    if (await this.hasHistory(id)) {
+      return this.prisma.ingredient.update({
+        where: { id },
+        data: { isActive: false },
+      });
+    }
+
+    return this.prisma.ingredient.delete({ where: { id } });
   }
 
   async registerPurchase(ingredientId: string, dto: RegisterPurchaseDto) {

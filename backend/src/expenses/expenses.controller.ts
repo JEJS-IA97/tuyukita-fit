@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ExpensesService } from './expenses.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
+import { CreateManualExpenseDto } from './dto/create-manual-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('expenses')
@@ -10,6 +12,12 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 @ApiBearerAuth()
 export class ExpensesController {
   constructor(private readonly expensesService: ExpensesService) {}
+
+  @Post('manual')
+  @ApiOperation({ summary: 'Create a manual expense with a financial snapshot' })
+  async createManual(@Body() dto: CreateManualExpenseDto, @Request() req) {
+    return this.expensesService.createManual(dto, req.user.sub);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create an expense' })
@@ -61,8 +69,18 @@ export class ExpensesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update an expense' })
-  async update(@Param('id') id: string, @Body() dto: Partial<CreateExpenseDto>) {
-    return this.expensesService.update(id, dto);
+  @ApiOperation({ summary: 'Correct an expense and record audit' })
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateExpenseDto,
+    @Request() req,
+  ) {
+    return this.expensesService.update(id, dto, req.user.sub);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Annul an expense without deleting it' })
+  async remove(@Param('id') id: string, @Request() req) {
+    return this.expensesService.remove(id, req.user.sub);
   }
 }

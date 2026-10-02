@@ -56,79 +56,79 @@ Cada tarea se implementa con pruebas primero, se ejecuta su suite aplicable y re
   - RF: RF-002.
   - Hecho cuando: se actualizan datos permitidos sin perder compras, lotes ni consumos historicos.
 
-- [ ] **T013 - Probar desactivacion, eliminacion segura y bloqueo de unidad**
+- [x] **T013 - Probar desactivacion, eliminacion segura y bloqueo de unidad**
   - RF: RF-003, RF-003a, RF-004.
   - Hecho cuando: un ingrediente con historial se desactiva y bloquea cambio de unidad; uno sin historial se elimina.
 
-- [ ] **T014 - Exponer el API de ingredientes con validacion y autenticacion**
+- [x] **T014 - Exponer el API de ingredientes con validacion y autenticacion**
   - RF: RF-001 a RF-004, RF-021, RF-022.
   - Hecho cuando: pruebas de controlador validan solicitudes autenticadas y errores de negocio.
 
-- [ ] **T015 - Probar CRUD de categorias de gastos**
+- [x] **T015 - Probar CRUD de categorias de gastos**
   - RF: RF-009a.
   - Hecho cuando: crear, editar y eliminar una categoria sin uso funciona; una categoria referenciada queda protegida.
 
-- [ ] **T016 - Exponer el API de categorias de gastos**
+- [x] **T016 - Exponer el API de categorias de gastos**
   - RF: RF-009a, RF-021, RF-022.
   - Hecho cuando: el API lista y modifica categorias configurables con validacion.
 
 ## Tasas y conversiones
 
-- [ ] **T017 - Definir el contrato de adaptador de tasas y sus pruebas**
+- [x] **T017 - Definir el contrato de adaptador de tasas y sus pruebas**
   - RF: RF-016, RF-017.
   - Hecho cuando: pruebas con proveedores simulados verifican tipo, valor positivo, fuente, fecha de vigencia y consulta.
 
-- [ ] **T018 - Implementar el adaptador BCV configurable**
+- [x] **T018 - Implementar el adaptador BCV configurable**
   - RF: RF-016, RF-017.
   - Hecho cuando: una fuente BCV configurada se consulta en el servidor y produce un snapshot valido probado.
 
-- [ ] **T019 - Implementar el adaptador USDT/VES configurable**
+- [x] **T019 - Implementar el adaptador USDT/VES configurable**
   - RF: RF-016, RF-017.
   - Hecho cuando: una fuente USDT/VES configurada se consulta en el servidor y produce un snapshot valido probado.
 
-- [ ] **T020 - Persistir tasas y recuperar la ultima vigente**
+- [x] **T020 - Persistir tasas y recuperar la ultima vigente**
   - RF: RF-017, RF-019, RF-020.
   - Hecho cuando: pruebas cubren nueva tasa, fin de semana/feriado y preservacion de snapshots ya usados.
 
-- [ ] **T021 - Exponer consulta y refresco de tasas en la API**
+- [x] **T021 - Exponer consulta y refresco de tasas en la API**
   - RF: RF-016 a RF-019a, RF-021.
   - Hecho cuando: el API devuelve BCV y USDT con fuente/fechas o un error claro si nunca hubo una tasa valida.
 
 ## Gastos, compras e inventario
 
-- [ ] **T022 - Probar y crear gastos manuales con snapshot financiero**
+- [x] **T022 - Probar y crear gastos manuales con snapshot financiero**
   - RF: RF-007, RF-008, RF-018, RF-020.
   - Hecho cuando: un gasto manual guarda categoria, VES, USD, tasa y usuario sin crear inventario.
 
-- [ ] **T023 - Exponer el API de gastos manuales**
+- [x] **T023 - Exponer el API de gastos manuales**
   - RF: RF-007, RF-008, RF-018, RF-021, RF-022.
   - Hecho cuando: el API crea, lista y consulta gastos manuales con respuestas validadas.
 
-- [ ] **T024 - Probar la transaccion de compra, gasto y lote**
+- [x] **T024 - Probar la transaccion de compra, gasto y lote**
   - RF: RF-005, RF-006, RF-009, RF-022.
   - Hecho cuando: una compra crea exactamente un gasto vinculado y un lote, y un fallo no deja registros parciales.
 
-- [ ] **T025 - Exponer el API de compras de ingredientes**
+- [x] **T025 - Exponer el API de compras de ingredientes**
   - RF: RF-005, RF-006, RF-009, RF-018, RF-021.
   - Hecho cuando: el API registra compras autenticadas con tasa seleccionada y devuelve sus snapshots.
 
-- [ ] **T026 - Probar el algoritmo FIFO puro**
+- [x] **T026 - Probar el algoritmo FIFO puro**
   - RF: RF-012, RF-012a, RF-013, RF-014.
   - Hecho cuando: pruebas cubren un lote, multiples lotes, empate por registro y rechazo por existencia insuficiente.
 
-- [ ] **T027 - Persistir salida manual y sus consumos FIFO**
+- [x] **T027 - Persistir salida manual y sus consumos FIFO**
   - RF: RF-011 a RF-015, RF-022.
   - Hecho cuando: una salida crea movimiento y detalle de lotes consumidos con costo USD historico.
 
-- [ ] **T028 - Exponer stock y salidas de inventario en la API**
+- [x] **T028 - Exponer stock y salidas de inventario en la API**
   - RF: RF-010 a RF-015, RF-021.
   - Hecho cuando: el API muestra existencia por ingrediente, registra salida y consulta su detalle FIFO.
 
-- [ ] **T029 - Probar recosteo por correcciones cronologicas**
+- [x] **T029 - Probar recosteo por correcciones cronologicas**
   - RF: RF-009b, RF-012b.
   - Hecho cuando: editar o eliminar una compra o salida retroactiva recalcula lotes y consumos en orden cronologico.
 
-- [ ] **T030 - Exponer correccion y eliminacion segura de compras, gastos y salidas**
+- [x] **T030 - Exponer correccion y eliminacion segura de compras, gastos y salidas**
   - RF: RF-009b, RF-022.
   - Hecho cuando: el API corrige o elimina registros permitidos sin movimientos huerfanos y registra auditoria.
 

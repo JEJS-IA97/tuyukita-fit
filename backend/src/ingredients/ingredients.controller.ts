@@ -3,7 +3,6 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
-import { RegisterPurchaseDto } from './dto/register-purchase.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('ingredients')
@@ -37,12 +36,6 @@ export class IngredientsController {
     return this.ingredientsService.update(id, dto);
   }
 
-  @Post(':id/purchases')
-  @ApiOperation({ summary: 'Register ingredient purchase' })
-  async registerPurchase(@Param('id') id: string, @Body() dto: RegisterPurchaseDto) {
-    return this.ingredientsService.registerPurchase(id, dto);
-  }
-
   @Get(':id/purchases')
   @ApiOperation({ summary: 'Get ingredient purchases' })
   async getPurchases(@Param('id') id: string) {
@@ -50,8 +43,8 @@ export class IngredientsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Deactivate an ingredient' })
-  async deactivate(@Param('id') id: string) {
-    return this.ingredientsService.deactivate(id);
+  @ApiOperation({ summary: 'Deactivate an ingredient with history, or delete it without history' })
+  async remove(@Param('id') id: string) {
+    return this.ingredientsService.remove(id);
   }
 }

@@ -8,6 +8,9 @@ import { ExchangeRatesModule } from './exchange-rates/exchange-rates.module';
 import { ProductsModule } from './products/products.module';
 import { FlavorsModule } from './flavors/flavors.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
+import { IngredientPurchasesModule } from './ingredient-purchases/ingredient-purchases.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { ExpenseCategoriesModule } from './expense-categories/expense-categories.module';
 import { PackagingModule } from './packaging/packaging.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { ProductCostsModule } from './product-costs/product-costs.module';
@@ -28,6 +31,9 @@ import { SettingsModule } from './settings/settings.module';
     ProductsModule,
     FlavorsModule,
     IngredientsModule,
+    IngredientPurchasesModule,
+    InventoryModule,
+    ExpenseCategoriesModule,
     PackagingModule,
     RecipesModule,
     ProductCostsModule,
