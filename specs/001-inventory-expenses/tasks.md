@@ -24,35 +24,35 @@ Cada tarea se implementa con pruebas primero, se ejecuta su suite aplicable y re
   - RF: soporte para RF-005, RF-009b y RF-012b.
   - Hecho cuando: queda documentado el respaldo realizado o la ausencia de datos, y se verifica que el entorno admite transacciones antes de aplicar el esquema.
 
-- [ ] **T006 - Crear utilidades de normalizacion y valores escalados**
+- [x] **T006 - Crear utilidades de normalizacion y valores escalados**
   - RF: RF-001a, RF-006, RF-007, RF-013, RF-018.
   - Hecho cuando: pruebas cubren normalizacion de nombres y conversion bidireccional con redondeo a dos decimales.
 
 ## Persistencia
 
-- [ ] **T007 - Ampliar el esquema para ingredientes y categorias configurables**
+- [x] **T007 - Ampliar el esquema para ingredientes y categorias configurables**
   - RF: RF-001a, RF-003, RF-003a, RF-009a.
   - Hecho cuando: Prisma genera el cliente con nombre normalizado unico y entidad de categoria activa.
 
-- [ ] **T008 - Ampliar el esquema para snapshots de tasas y gastos**
+- [x] **T008 - Ampliar el esquema para snapshots de tasas y gastos**
   - RF: RF-006, RF-007, RF-018, RF-020.
   - Hecho cuando: compras y gastos pueden referenciar categoria, tipo de tasa, fuente, fecha y valores VES/USD historicos.
 
-- [ ] **T009 - Ampliar el esquema para lotes, salidas y consumos FIFO**
+- [x] **T009 - Ampliar el esquema para lotes, salidas y consumos FIFO**
   - RF: RF-005, RF-010 a RF-015.
   - Hecho cuando: Prisma genera las entidades y relaciones de lote, movimiento y consumo sin errores.
 
-- [ ] **T010 - Aplicar el esquema en desarrollo y comprobar integridad basica**
+- [x] **T010 - Aplicar el esquema en desarrollo y comprobar integridad basica**
   - RF: soporte para RF-001 a RF-022.
   - Hecho cuando: el esquema se sincroniza en desarrollo, el cliente Prisma se genera y las pruebas existentes siguen verdes.
 
 ## Ingredientes y categorias
 
-- [ ] **T011 - Probar y crear ingrediente con nombre unico normalizado**
+- [x] **T011 - Probar y crear ingrediente con nombre unico normalizado**
   - RF: RF-001, RF-001a.
   - Hecho cuando: crear `Yuca`, `yuca` o ` YUCA ` no permite duplicados y las pruebas estan verdes.
 
-- [ ] **T012 - Probar y actualizar datos configurables de ingrediente**
+- [x] **T012 - Probar y actualizar datos configurables de ingrediente**
   - RF: RF-002.
   - Hecho cuando: se actualizan datos permitidos sin perder compras, lotes ni consumos historicos.
 

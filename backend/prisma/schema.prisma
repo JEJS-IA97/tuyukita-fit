@@ -23,6 +23,8 @@ model User {
   cashMovements   CashMovement[]
   auditLogs       AuditLog[]
   exchangeRates   ExchangeRate[]
+  expenseCategories ExpenseCategory[]
+  inventoryMovements InventoryMovement[]
 
   @@map("users")
 }
@@ -104,20 +106,80 @@ model Flavor {
 }
 
 model Ingredient {
-  id          String   @id @default(uuid()) @map("_id")
-  name        String
-  description String?
-  unit        String
-  currentCost Float?   @map("current_cost")
-  currency    String   @default("USD")
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(uuid()) @map("_id")
+  name            String
+  normalizedName  String   @unique @map("normalized_name")
+  description     String?
+  unit            String
+  currentCost     Float?   @map("current_cost")
+  currency        String   @default("USD")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   purchases         IngredientPurchase[]
   recipeIngredients RecipeIngredient[]
+  inventoryLots     InventoryLot[]
+  inventoryMovements InventoryMovement[]
 
   @@map("ingredients")
+}
+
+model InventoryLot {
+  id                   String   @id @default(uuid()) @map("_id")
+  ingredientId         String   @map("ingredient_id")
+  purchaseId           String   @map("purchase_id")
+  initialQuantityMinor Int      @map("initial_quantity_minor")
+  remainingQuantityMinor Int    @map("remaining_quantity_minor")
+  unitCostVesMinor     Int      @map("unit_cost_ves_minor")
+  unitCostUsdMinor     Int      @map("unit_cost_usd_minor")
+  lotDate              DateTime @map("lot_date")
+  createdAt            DateTime @default(now())
+
+  ingredient   Ingredient                @relation(fields: [ingredientId], references: [id])
+  purchase     IngredientPurchase        @relation(fields: [purchaseId], references: [id])
+  consumptions InventoryLotConsumption[]
+
+  @@index([ingredientId])
+  @@index([lotDate])
+  @@map("inventory_lots")
+}
+
+model InventoryMovement {
+  id              String   @id @default(uuid()) @map("_id")
+  ingredientId    String   @map("ingredient_id")
+  type            String   @default("OUT")
+  quantityMinor   Int      @map("quantity_minor")
+  costUsdMinor    Int      @map("cost_usd_minor")
+  reason          String
+  movementDate    DateTime @map("movement_date")
+  createdById     String   @map("created_by_id")
+  createdAt       DateTime @default(now())
+
+  ingredient   Ingredient                 @relation(fields: [ingredientId], references: [id])
+  createdBy    User                       @relation(fields: [createdById], references: [id])
+  consumptions InventoryLotConsumption[]
+
+  @@index([ingredientId])
+  @@index([movementDate])
+  @@map("inventory_movements")
+}
+
+model InventoryLotConsumption {
+  id            String   @id @default(uuid()) @map("_id")
+  movementId    String   @map("movement_id")
+  lotId         String   @map("lot_id")
+  quantityMinor Int      @map("quantity_minor")
+  costUsdMinor  Int      @map("cost_usd_minor")
+  createdAt     DateTime @default(now())
+
+  movement InventoryMovement @relation(fields: [movementId], references: [id])
+  lot      InventoryLot      @relation(fields: [lotId], references: [id])
+
+  @@unique([movementId, lotId])
+  @@index([movementId])
+  @@index([lotId])
+  @@map("inventory_lot_consumptions")
 }
 
 model PackagingItem {
@@ -138,20 +200,27 @@ model PackagingItem {
 }
 
 model IngredientPurchase {
-  id             String   @id @default(uuid()) @map("_id")
-  ingredientId   String   @map("ingredient_id")
-  quantity       Float
-  unitCost       Float    @map("unit_cost")
-  totalCost      Float    @map("total_cost")
-  currency       String
-  exchangeRateId String?  @map("exchange_rate_id")
-  purchaseDate   DateTime @map("purchase_date")
-  expenseId      String?  @map("expense_id")
-  notes          String?
-  createdAt      DateTime @default(now())
+  id                 String    @id @default(uuid()) @map("_id")
+  ingredientId       String    @map("ingredient_id")
+  quantity           Float
+  unitCost           Float     @map("unit_cost")
+  totalCost          Float     @map("total_cost")
+  currency           String
+  exchangeRateId     String?   @map("exchange_rate_id")
+  exchangeRateType   String?   @map("exchange_rate_type")
+  exchangeRateSource String?   @map("exchange_rate_source")
+  exchangeRateDate   DateTime? @map("exchange_rate_date")
+  quantityMinor      Int?      @map("quantity_minor")
+  totalCostVesMinor  Int?      @map("total_cost_ves_minor")
+  totalCostUsdMinor  Int?      @map("total_cost_usd_minor")
+  purchaseDate       DateTime  @map("purchase_date")
+  expenseId          String?   @map("expense_id")
+  notes              String?
+  createdAt          DateTime  @default(now())
 
   ingredient   Ingredient    @relation(fields: [ingredientId], references: [id])
   exchangeRate ExchangeRate? @relation(fields: [exchangeRateId], references: [id])
+  inventoryLots InventoryLot[]
 
   @@index([ingredientId])
   @@map("ingredient_purchases")
@@ -334,33 +403,56 @@ model Payment {
 }
 
 model Expense {
-  id                String   @id @default(uuid()) @map("_id")
-  expenseNumber     String   @unique @map("expense_number")
-  expenseDate       DateTime @map("expense_date")
-  category          String
-  description       String
-  amount            Float
-  paidAmount        Float    @default(0) @map("paid_amount")
-  pendingAmount     Float    @default(0) @map("pending_amount")
-  currency          String   @default("USD")
-  exchangeRateId    String?  @map("exchange_rate_id")
-  exchangeRateValue Float?   @map("exchange_rate_value")
-  paymentStatus     String   @default("PENDING") @map("payment_status")
-  paymentMethod     String?  @map("payment_method")
-  supplierName      String?  @map("supplier_name")
-  notes             String?
-  createdById       String   @map("created_by_id")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                  String    @id @default(uuid()) @map("_id")
+  expenseNumber       String    @unique @map("expense_number")
+  expenseDate         DateTime  @map("expense_date")
+  category            String
+  categoryId          String?   @map("category_id")
+  description         String
+  amount              Float
+  paidAmount          Float     @default(0) @map("paid_amount")
+  pendingAmount       Float     @default(0) @map("pending_amount")
+  currency            String    @default("USD")
+  amountVesMinor      Int?      @map("amount_ves_minor")
+  amountUsdMinor      Int?      @map("amount_usd_minor")
+  exchangeRateId      String?   @map("exchange_rate_id")
+  exchangeRateValue   Float?    @map("exchange_rate_value")
+  exchangeRateType    String?   @map("exchange_rate_type")
+  exchangeRateSource  String?   @map("exchange_rate_source")
+  exchangeRateDate    DateTime? @map("exchange_rate_date")
+  paymentStatus       String    @default("PENDING") @map("payment_status")
+  paymentMethod       String?   @map("payment_method")
+  supplierName        String?   @map("supplier_name")
+  notes               String?
+  createdById         String    @map("created_by_id")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
-  createdBy    User          @relation("ExpensesByUser", fields: [createdById], references: [id])
-  exchangeRate ExchangeRate? @relation(fields: [exchangeRateId], references: [id])
+  createdBy    User            @relation("ExpensesByUser", fields: [createdById], references: [id])
+  exchangeRate ExchangeRate?   @relation(fields: [exchangeRateId], references: [id])
+  categoryRef  ExpenseCategory? @relation(fields: [categoryId], references: [id])
 
   @@index([expenseDate])
   @@index([category])
+  @@index([categoryId])
   @@index([paymentStatus])
   @@index([createdById])
   @@map("expenses")
+}
+
+model ExpenseCategory {
+  id             String   @id @default(uuid()) @map("_id")
+  name           String
+  normalizedName String   @unique @map("normalized_name")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdById    String?  @map("created_by_id")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  createdBy User? @relation(fields: [createdById], references: [id])
+  expenses  Expense[]
+
+  @@map("expense_categories")
 }
 
 model CashAccount {
