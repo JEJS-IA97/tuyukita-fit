@@ -3,10 +3,14 @@ services:
     name: yukita-fit-api
     runtime: node
     plan: free
-    buildCommand: npm ci && npx prisma generate && npx prisma db push && npm run build
-    startCommand: node dist/src/main.js
+    buildCommand: cd backend && corepack pnpm@10.14.0 install --frozen-lockfile && pnpm exec prisma generate && pnpm exec prisma db push && pnpm run build
+    startCommand: cd backend && node dist/src/main.js
     healthCheckPath: /api/docs
     envVars:
+      - key: NODE_VERSION
+        value: 22.18.0
+      - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
+        value: "0"
       - key: NODE_ENV
         value: production
       - key: API_PREFIX
