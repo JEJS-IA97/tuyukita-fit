@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { normalizeName } from '../common/name-normalization';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { RegisterPurchaseDto } from './dto/register-purchase.dto';
@@ -9,13 +14,24 @@ export class IngredientsService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateIngredientDto) {
+    const normalizedName = normalizeName(dto.name);
+
+    const existing = await this.prisma.ingredient.findUnique({
+      where: { normalizedName },
+    });
+    if (existing) {
+      throw new ConflictException('Ingredient already exists');
+    }
+
     return this.prisma.ingredient.create({
       data: {
         name: dto.name,
+        normalizedName,
         description: dto.description,
         unit: dto.unit,
         currentCost: dto.currentCost,
         currency: dto.currency || 'USD',
+        isActive: true,
       },
     });
   }
@@ -46,11 +62,28 @@ export class IngredientsService {
   }
 
   async update(id: string, dto: UpdateIngredientDto) {
-    await this.findById(id);
+    const current = await this.findById(id);
+
+    const data: UpdateIngredientDto & { normalizedName?: string } = {
+      ...dto,
+    };
+
+    if (dto.name !== undefined) {
+      const normalizedName = normalizeName(dto.name);
+      if (normalizedName !== current.normalizedName) {
+        const conflict = await this.prisma.ingredient.findUnique({
+          where: { normalizedName },
+        });
+        if (conflict && conflict.id !== id) {
+          throw new ConflictException('Ingredient already exists');
+        }
+      }
+      data.normalizedName = normalizedName;
+    }
 
     return this.prisma.ingredient.update({
       where: { id },
-      data: dto,
+      data,
     });
   }
 
