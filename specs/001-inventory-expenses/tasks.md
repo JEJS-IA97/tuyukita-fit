@@ -134,40 +134,78 @@ Cada tarea se implementa con pruebas primero, se ejecuta su suite aplicable y re
 
 ## Cliente movil
 
-- [ ] **T031 - Crear cliente HTTP autenticado y tipos de dominio del movil**
+- [x] **T031 - Crear cliente HTTP autenticado y tipos de dominio del movil**
   - RF: RF-021.
   - Hecho cuando: el cliente movil consume endpoints autenticados y maneja estados de carga y error.
 
-- [ ] **T032 - Implementar pantalla de ingredientes y formulario CRUD**
+- [x] **T032 - Implementar portada y acceso con login**
+  - RF: RF-021.
+  - Diseno: `docs/design/examples/portada.jpg`.
+  - Hecho cuando: la app abre en la portada, el login autentica a Jose, Jai o Vivi, la sesion persiste entre reinicios y las rutas protegidas redirigen al login.
+  - [x] Restaurar sesion al arrancar (tokens en SecureStore y `GET /auth/me`).
+  - [x] Pantalla de portada con navegacion a login.
+  - [x] Formulario de login con credenciales invalidas visibles y estado de carga.
+
+- [ ] **T033 - Implementar dashboard de inicio con indicador de tasas**
+  - RF: RF-007, RF-008, RF-010, RF-016 a RF-019a.
+  - Diseno: `docs/design/examples/budget.png` y `docs/design/mockup-inicio.html`.
+  - Hecho cuando: Inicio muestra BCV y USDT con fuente y fecha, resumen de gastos del mes en VES/USD y ingredientes con existencia critica, con carga y errores comprensibles.
+  - [ ] Tarjetas de tasas BCV/USDT con fuente, valor y fecha de vigencia; error claro si nunca hubo tasa (RF-019a).
+  - [ ] Resumen de gastos del mes (manuales y compras) en VES y USD.
+  - [ ] Lista de ingredientes con existencia critica o agotada.
+
+- [ ] **T034 - Implementar pantalla de perfil y cierre de sesion**
+  - RF: RF-021, RF-022.
+  - Diseno: `docs/design/examples/user profile.jpg`.
+  - Hecho cuando: el perfil muestra los datos de la cuenta activa (nombre, usuario y rol) y cierra la sesion limpiando los tokens locales.
+  - [ ] Vista de perfil con datos de `GET /auth/me`.
+  - [ ] Boton de cerrar sesion que limpia tokens y vuelve al login.
+  - Nota: editar nombre o contrasena queda fuera de alcance hasta definir un endpoint nuevo.
+
+- [ ] **T035 - Implementar pantalla de ingredientes y formulario CRUD**
   - RF: RF-001 a RF-004.
-  - Hecho cuando: se pueden crear, editar, desactivar o eliminar ingredientes desde el movil con validaciones visibles.
+  - Diseno: `docs/design/examples/ingredientes.png`, `inventory manager.jpg`, `invetory.png` y `Search.png`.
+  - Hecho cuando: se pueden buscar, crear, editar, desactivar o eliminar ingredientes desde el movil con validaciones visibles.
+  - [ ] Lista de ingredientes con buscador y filtro activo/inactivo.
+  - [ ] Formulario crear/editar con nombre unico normalizado y unidad (RF-001, RF-001a, RF-002).
+  - [ ] Acciones desactivar/eliminar con bloqueos del backend visibles (RF-003, RF-003a, RF-004).
 
-- [ ] **T033 - Implementar gestion movil de categorias de gastos**
+- [ ] **T036 - Implementar gestion movil de categorias de gastos**
   - RF: RF-009a.
+  - Diseno: `docs/design/mockup-gastos.html`.
   - Hecho cuando: el usuario crea, edita y elimina categorias desde la aplicacion.
+  - [ ] Lista de categorias con creacion y edicion.
+  - [ ] Eliminacion con mensaje cuando la categoria esta en uso.
 
-- [ ] **T034 - Implementar indicador movil de tasas**
-  - RF: RF-016 a RF-019a.
-  - Hecho cuando: la aplicacion muestra BCV y USDT con fuente, fecha, ultima vigencia y errores comprensibles.
-
-- [ ] **T035 - Implementar formulario movil de compra de ingrediente**
+- [ ] **T037 - Implementar formulario movil de compra de ingrediente**
   - RF: RF-005, RF-006, RF-009, RF-018.
   - Hecho cuando: el formulario muestra la conversion USD antes de confirmar y registra una compra exitosa.
+  - [ ] Selector de ingrediente, cantidad, costo VES, tasa y fecha.
+  - [ ] Vista previa de la conversion USD con la tasa elegida (RF-018).
+  - [ ] Confirmacion de compra atomica y error de duplicado visible (RF-009).
 
-- [ ] **T036 - Implementar consulta de inventario y salida manual movil**
+- [ ] **T038 - Implementar consulta de inventario y salida manual movil**
   - RF: RF-010 a RF-015.
+  - Diseno: `docs/design/mockup-inventario.html` y `docs/design/examples/inventory manager 2.jpg`.
   - Hecho cuando: se visualiza stock y se registra una salida con validacion de existencia insuficiente.
+  - [ ] Lista de existencias por ingrediente con su unidad (RF-010).
+  - [ ] Formulario de salida: ingrediente, cantidad, fecha y motivo (RF-011).
+  - [ ] Rechazo visible por existencia insuficiente sin modificar lotes (RF-014).
+  - [ ] Detalle de lotes consumidos FIFO con costo USD (RF-012, RF-013, RF-015).
 
-- [ ] **T037 - Implementar gastos manuales y categorias en el movil**
+- [ ] **T039 - Implementar gastos manuales y categorias en el movil**
   - RF: RF-007, RF-008, RF-018.
+  - Diseno: `docs/design/mockup-gastos.html`.
   - Hecho cuando: se crea y consulta un gasto manual sin modificar inventario.
+  - [ ] Formulario con descripcion, categoria, monto VES, tasa y pago.
+  - [ ] Listado y detalle del gasto con snapshot historico (RF-007, RF-018, RF-020).
 
 ## Cierre
 
-- [ ] **T038 - Ejecutar regresion completa y validar RF por RF**
+- [ ] **T040 - Ejecutar regresion completa y validar RF por RF**
   - RF: RF-001 a RF-022.
   - Hecho cuando: suites de backend y movil estan verdes y cada RF tiene una prueba enlazada en la validacion final.
 
-- [ ] **T039 - Verificar los flujos en Android y documentar configuracion local**
+- [ ] **T041 - Verificar los flujos en Android y documentar configuracion local**
   - RF: RF-001 a RF-022.
-  - Hecho cuando: los flujos de ingredientes, compra, gasto y salida se prueban manualmente en Android y la configuracion necesaria queda documentada.
+  - Hecho cuando: los flujos de login, ingredientes, compra, gasto y salida se prueban manualmente en Android y la configuracion necesaria queda documentada.
