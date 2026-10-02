@@ -385,3 +385,56 @@ describe('ExpensesService manual expenses (RF-007, RF-008, RF-018, RF-020)', () 
     });
   });
 });
+
+describe('expenses summary totals (RF-007, RF-018)', () => {
+  const prismaMock = {
+    expense: {
+      aggregate: jest.fn(),
+      groupBy: jest.fn(),
+    },
+  };
+
+  let service: ExpensesService;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    service = new ExpensesService(
+      prismaMock as any,
+      {} as any,
+      {} as any,
+    );
+  });
+
+  it('sums VES totals and USD minor totals of active expenses (RF-007)', async () => {
+    prismaMock.expense.aggregate.mockResolvedValue({
+      _sum: {
+        amount: 150000,
+        paidAmount: 100000,
+        pendingAmount: 50000,
+        amountUsdMinor: 62500,
+      },
+      _count: 3,
+    });
+    prismaMock.expense.groupBy.mockResolvedValue([
+      {
+        category: 'Materia prima',
+        _sum: { amount: 150000, paidAmount: 100000 },
+        _count: 3,
+      },
+    ]);
+
+    const summary = await service.getSummary();
+
+    expect(prismaMock.expense.aggregate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        _sum: expect.objectContaining({ amountUsdMinor: true }),
+      }),
+    );
+    expect(summary).toMatchObject({
+      totalExpenses: 150000,
+      totalPaid: 100000,
+      totalUsdMinor: 62500,
+      expensesCount: 3,
+    });
+  });
+});

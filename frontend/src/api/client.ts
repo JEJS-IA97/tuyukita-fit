@@ -32,7 +32,11 @@ function toHttpError(status: number, payload: unknown): ApiError {
 }
 
 export function createApiClient(options: ApiClientOptions = {}): ApiClient {
-  const baseUrl = (options.baseUrl ?? DEFAULT_API_BASE_URL).replace(/\/$/, '');
+  const baseUrl = (
+    options.baseUrl ??
+    process.env.EXPO_PUBLIC_API_URL ??
+    DEFAULT_API_BASE_URL
+  ).replace(/\/$/, '');
   const fetchFn = options.fetchFn ?? fetch;
 
   async function request<T>(

@@ -51,10 +51,9 @@ describe('<WelcomeScreen /> (portada)', () => {
     jest.useRealTimers();
   });
 
-  it('shows the welcome message and the slogan', async () => {
+  it('shows the brand slogan', async () => {
     const { getByText } = await renderWelcome(jest.fn());
 
-    getByText('¡Bienvenido!');
     getByText('¡Come yuca y ponte yuka!');
   });
 

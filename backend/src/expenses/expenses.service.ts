@@ -233,6 +233,7 @@ export class ExpensesService {
         amount: true,
         paidAmount: true,
         pendingAmount: true,
+        amountUsdMinor: true,
       },
       _count: true,
     });
@@ -251,6 +252,7 @@ export class ExpensesService {
       totalExpenses: summary._sum.amount || 0,
       totalPaid: summary._sum.paidAmount || 0,
       totalPending: summary._sum.pendingAmount || 0,
+      totalUsdMinor: summary._sum.amountUsdMinor || 0,
       expensesCount: summary._count,
       byCategory: byCategory.map(cat => ({
         category: cat.category,

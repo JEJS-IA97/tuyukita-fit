@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedArea } from '@/auth/authenticated-area';
+import { HeaderAvatar } from '@/components/header-avatar';
 import { colors } from '@/theme';
 
 export default function TabLayout() {
@@ -24,6 +25,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: 'Inicio',
+            headerRight: () => <HeaderAvatar />,
             tabBarIcon: ({ color, size, focused }) => (
               <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
             ),

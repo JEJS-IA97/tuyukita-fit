@@ -134,4 +134,22 @@ describe('mobile HTTP client (RF-021)', () => {
     await expect(client.get('/auth/me')).rejects.toMatchObject({ status: 401 });
     expect(onUnauthorized).toHaveBeenCalledTimes(1);
   });
+
+  it('uses EXPO_PUBLIC_API_URL as base url when no baseUrl is given', async () => {
+    process.env.EXPO_PUBLIC_API_URL = 'http://10.0.0.5:3000/api/v1';
+    try {
+      const fetchFn = jest.fn().mockResolvedValue(jsonResponse(200, {}));
+      const client = createApiClient({
+        fetchFn: fetchFn as unknown as typeof fetch,
+      });
+
+      await client.get('/exchange-rates/latest');
+
+      expect(fetchFn.mock.calls[0][0]).toBe(
+        'http://10.0.0.5:3000/api/v1/exchange-rates/latest',
+      );
+    } finally {
+      delete process.env.EXPO_PUBLIC_API_URL;
+    }
+  });
 });

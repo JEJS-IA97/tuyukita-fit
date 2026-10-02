@@ -16,6 +16,7 @@ export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 export type AuthContextValue = {
   status: AuthStatus;
   user: AuthUser | null;
+  session: Session;
   signIn: (username: string, password: string) => Promise<AuthUser>;
   signOut: () => Promise<void>;
 };
@@ -81,8 +82,8 @@ export function AuthProvider({
   }, [session]);
 
   const value = useMemo(
-    () => ({ status, user, signIn, signOut }),
-    [status, user, signIn, signOut],
+    () => ({ status, user, session, signIn, signOut }),
+    [status, user, session, signIn, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

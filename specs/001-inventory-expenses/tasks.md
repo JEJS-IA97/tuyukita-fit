@@ -146,13 +146,13 @@ Cada tarea se implementa con pruebas primero, se ejecuta su suite aplicable y re
   - [x] Pantalla de portada con navegacion a login.
   - [x] Formulario de login con credenciales invalidas visibles y estado de carga.
 
-- [ ] **T033 - Implementar dashboard de inicio con indicador de tasas**
+- [x] **T033 - Implementar dashboard de inicio con indicador de tasas**
   - RF: RF-007, RF-008, RF-010, RF-016 a RF-019a.
   - Diseno: `docs/design/examples/budget.png` y `docs/design/mockup-inicio.html`.
   - Hecho cuando: Inicio muestra BCV y USDT con fuente y fecha, resumen de gastos del mes en VES/USD y ingredientes con existencia critica, con carga y errores comprensibles.
-  - [ ] Tarjetas de tasas BCV/USDT con fuente, valor y fecha de vigencia; error claro si nunca hubo tasa (RF-019a).
-  - [ ] Resumen de gastos del mes (manuales y compras) en VES y USD.
-  - [ ] Lista de ingredientes con existencia critica o agotada.
+  - [x] Tarjetas de tasas BCV/USDT con fuente, valor y fecha de vigencia; error claro si nunca hubo tasa (RF-019a).
+  - [x] Resumen de gastos del mes (manuales y compras) en VES y USD.
+  - [x] Lista de ingredientes con existencia critica o agotada.
 
 - [ ] **T034 - Implementar pantalla de perfil y cierre de sesion**
   - RF: RF-021, RF-022.

@@ -21,7 +21,6 @@ export type LoginResponse = {
 export type RateType = 'BCV' | 'USDT';
 
 export type RateDto = {
-  id: string;
   rateType: RateType;
   valueVesPerUsd: number;
   source: string;
@@ -228,4 +227,18 @@ export type ExpenseSummary = {
   totalPurchasesVes: number;
   totalVes: number;
   totalUsd: number;
+};
+
+export type ExpensesSummary = {
+  totalExpenses: number | string;
+  totalPaid: number | string;
+  totalPending: number | string;
+  totalUsdMinor: number;
+  expensesCount: number;
+  byCategory: {
+    category: string;
+    total: number | string;
+    paid: number | string;
+    count: number;
+  }[];
 };

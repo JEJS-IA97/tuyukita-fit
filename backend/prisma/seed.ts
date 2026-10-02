@@ -56,6 +56,7 @@ async function createInitialAdmin(
     data: {
       role: 'ADMIN',
       isActive: true,
+      passwordHash,
     },
   });
 
